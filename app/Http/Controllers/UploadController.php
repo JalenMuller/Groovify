@@ -12,22 +12,26 @@ class UploadController extends Controller
 
         $data = $request->validated();
         if($request->hasFile('cover')){    
-            $file_name = $request->file('cover')->hashName();
-            $cover_path = $request->file('cover')->storePublicly('public/images/covers');
+            $request->file('cover')->storePublicly('public/images/covers');
+            $cover_file_name = $request->file('cover')->hashName();
         } else {
             return response()->json(['message' => 'Something went wrong with your image upload.']);
         }
         if($request->hasFile('song')){    
-            $song_path = $request->file('song')->storePublicly('public/songs');
+            $request->file('song')->storePublicly('public/songs');
+            $song_file_name = $request->file('song')->hashName();
         } else {
             return response()->json(['message' => 'Something went wrong with your song upload.']);
         }
 
         $song = Song::create([
             'name' => $data['name'],
-            'artists' => $data['artists'],
-            'cover_path' => $file_name,
-            'song_path' => $song_path
+            'artist' => $data['artist'],
+            'length' => $data['length'],
+            'release_date' => $data['release_date'],
+            'genre_id' => $data['genre_id'],
+            'cover_path' => $cover_file_name,
+            'song_path' => $song_file_name
         ]);
 
         return response()->json([

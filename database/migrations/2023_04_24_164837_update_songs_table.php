@@ -11,20 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('songs', function (Blueprint $table) {
-            $table->id();
-            $table->string("name");
-            $table->string("artist");
-            $table->string("path");
-            $table->timestamps();
-        });
-    }
+        Schema::table('songs', function (Blueprint $table) {
+            $table->foreign('genre_id')->references('id')->on('genres');         
+        });    }
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('songs');
+        //
     }
 };

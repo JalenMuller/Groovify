@@ -25,3 +25,4 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 Route::post('/upload-song', [UploadController::class, 'uploadSong']);
 Route::get('/songs', [MusicController::class, 'index_songs']);
+// Route::get('/genres', [MusicController::class, 'index_songs']);

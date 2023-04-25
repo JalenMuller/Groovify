@@ -1,17 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { ClockIcon } from "@heroicons/react/24/outline";
 import axios from "../axios";
+import {
+    secondsToMinutes,
+    timeToPrettyDate,
+} from "../functions/generalFunctions";
+import { MusicPlayerContext } from "../contexts/MusicPlayerContext";
+import { Song } from "../interfaces/SongInterface";
+
 function Discover() {
     const [songs, setSongs] = useState([]);
-    interface Song {
-        artists: string;
-        cover_path: string;
-        created_at: string;
-        id: number;
-        name: string;
-        song_path: string;
-        updated_at: string;
-    }
+    const context = useContext(MusicPlayerContext);
     const fetchSongs = async () => {
         try {
             const res = await axios.get("/songs");
@@ -27,7 +26,7 @@ function Discover() {
         fetchSongs();
     }, []);
     return (
-        <div className="w-full h-full flex-col py-6 px-2 md:px-5">
+        <div className="w-full h-full flex-col p-2 md:px-5">
             <div className="pl-2">
                 <h1 className="text-2xl font-semibold mt-5">Discover</h1>
                 <p className="text-base text-zinc-300 mt-1 mb-5">
@@ -63,7 +62,10 @@ function Discover() {
                     </thead>
                     <tbody>
                         {songs?.map((song: Song) => (
-                            <tr className="text-gray-400 rounded-lg hover:bg-gray-800/50 cursor-pointer">
+                            <tr
+                                className="text-gray-400 rounded-lg hover:bg-gray-800/50 cursor-pointer"
+                                onClick={() => context.setSong(song)}
+                            >
                                 <th
                                     scope="row"
                                     className="flex px-6 py-4 font-normal whitespace-nowrap text-white"
@@ -80,7 +82,7 @@ function Discover() {
                                             {song.name}
                                         </p>
                                         <p className="text-xs text-gray-400">
-                                            {song.artists}
+                                            {song.artist}
                                         </p>
                                     </div>
                                 </th>
@@ -88,10 +90,10 @@ function Discover() {
                                     None
                                 </td>
                                 <td className="px-6 py-4 hidden md:table-cell">
-                                    Jan 3, 2023
+                                    {timeToPrettyDate(song.release_date)}
                                 </td>
                                 <td className="px-6 py-4 hidden md:table-cell">
-                                    4:23
+                                    {secondsToMinutes(song.length)}
                                 </td>
                             </tr>
                         ))}

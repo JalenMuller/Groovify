@@ -1,16 +1,21 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState, createContext } from "react";
 import { Navigate, Outlet } from "react-router-dom";
-import { NavLink } from "react-router-dom";
 import axios from "../axios";
 import { useAuth } from "../contexts/AuthContext";
-
 import Navigation from "../components/Navigation";
 import ProfileDropdown from "../components/ProfileDropdown";
 import { initFlowbite } from "flowbite";
+import MusicPlayer from "../components/MusicPlayer";
+import { MusicPlayerContext } from "../contexts/MusicPlayerContext";
+import { Song } from "../interfaces/SongInterface";
 
 export default function DefaultLayout() {
-    const { user, setUser } = useAuth();
-    const [screenWidth, setScreenWidth] = useState(screen.width);
+    const { user, setUser }: any = useAuth();
+    const [song, setSong] = useState({});
+
+    const setState = (newSong: Song) => {
+        setSong(newSong);
+    };
     // check if user is logged in or not from server
     useEffect(() => {
         initFlowbite();
@@ -48,14 +53,25 @@ export default function DefaultLayout() {
     };
     return (
         <>
-            <ProfileDropdown />
-            <div className="flex h-screen w-screen bg-zinc-900 overflow-hidden">
-                <Navigation />
-                <main className="flex flex-col h-full w-full pb-24 md:pb-0 flex-col text-white">
-                    {/* <div className="h-16" id="profile-dropdown-spacer" /> */}
-                    <Outlet />
-                </main>
-            </div>
+            <MusicPlayerContext.Provider
+                value={{
+                    song: song,
+                    setSong: (newSong: Song) => setState(newSong),
+                }}
+            >
+                <div className="flex h-screen w-screen bg-zinc-900 overflow-hidden">
+                    <Navigation />
+                    <main className="flex flex-col h-full w-full pb-16 md:pb-0 flex-col text-white">
+                        {/* <div className="h-12 bg-transparent" id="topbar-spacer" /> */}
+                        <ProfileDropdown
+                            name={user.name}
+                            logout={handleLogout}
+                        />
+                        <Outlet />
+                        <MusicPlayer />
+                    </main>
+                </div>
+            </MusicPlayerContext.Provider>
         </>
     );
 }

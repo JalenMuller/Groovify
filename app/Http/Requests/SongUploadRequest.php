@@ -23,7 +23,10 @@ class SongUploadRequest extends FormRequest
     {
         return [
             'name' => 'required|max:255',
-            'artists' => 'required|string|max:255',
+            'artist' => 'required|string|max:255',
+            'release_date' => 'required|string|max:255',
+            'genre_id' => 'required|string|max:255',
+            'length' => 'required|string|max:255',
             'cover' => [
                 'required',
                 File::types(['png', 'jpeg'])

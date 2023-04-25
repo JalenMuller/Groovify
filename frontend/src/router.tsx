@@ -5,7 +5,7 @@ import Profile from "./pages/Profile";
 import Register from "./pages/Register";
 import ProtectedLayout from "./layouts/ProtectedLayout";
 import GuestLayout from "./layouts/GuestLayout";
-import MyMusic from "./pages/MyMusic";
+import MyMusic from "./pages/MyMusic/MyMusic";
 import Discover from "./pages/Discover";
 
 const router = createBrowserRouter([

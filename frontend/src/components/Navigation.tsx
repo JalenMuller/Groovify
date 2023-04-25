@@ -13,6 +13,7 @@ import { Link } from "react-router-dom";
 function Navigation() {
     return (
         <>
+            {/*desktop/tablet navbar */}
             <aside
                 id="default-sidebar"
                 className="z-40 w-48 h-screen hidden md:block"
@@ -102,7 +103,8 @@ function Navigation() {
                     </ul>
                 </div>
             </aside>
-            <div className="flex md:hidden absolute bottom-0 left-0 justify-center p-4 space-x-4 w-full bg-white dark:bg-gray-800 z-20 border-r border-gray-200 dark:border-gray-700">
+            {/* mobile navbar */}
+            <div className="flex md:hidden absolute bottom-0 left-0 justify-center p-4 space-x-4 w-full h-16 bg-white dark:bg-gray-800 z-20 border-r border-gray-200 dark:border-gray-700">
                 <a
                     href="#"
                     className="inline-flex justify-center p-2 text-gray-500 rounded cursor-pointer dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-600"

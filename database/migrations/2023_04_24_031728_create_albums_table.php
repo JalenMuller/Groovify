@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -11,11 +12,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('songs', function (Blueprint $table) {
+        Schema::create('albums', function (Blueprint $table) {
             $table->id();
-            $table->string("name");
+            $table->string("title");
+            $table->json("songs");
             $table->string("artist");
-            $table->string("path");
+            $table->date("release_date");
+            $table->unsignedBigInteger('genre_id')->nullable();
             $table->timestamps();
         });
     }
@@ -25,6 +28,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('songs');
+        DB::statement('SET FOREIGN_KEY_CHECKS = 0');
+        Schema::dropIfExists('albums');
+        DB::statement('SET FOREIGN_KEY_CHECKS = 1');
     }
 };
