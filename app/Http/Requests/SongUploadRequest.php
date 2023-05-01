@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\File;
+
 class SongUploadRequest extends FormRequest
 {
     /**
@@ -27,15 +28,18 @@ class SongUploadRequest extends FormRequest
             'release_date' => 'required|string|max:255',
             'genre_id' => 'required|string|max:255',
             'length' => 'required|string|max:255',
+            'features' => 'json|max:255',
             'cover' => [
                 'required',
                 File::types(['png', 'jpeg'])
-                    ->max(1024 * 1000 * 2), //2MB?
+                    ->max(1024 * 1000 * 2),
+                //2MB?
             ],
             'song' => [
                 'required',
                 File::types(['mp3'])
-                    ->max(1024 * 1000 * 6), //6MB?
+                    ->max(1024 * 1000 * 6),
+                //6MB?
             ],
         ];
     }

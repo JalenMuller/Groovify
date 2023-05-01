@@ -11,11 +11,13 @@ class Song extends Model
     protected $fillable = [
         'name',
         'artist',
+        'features',
         'length',
         'album_id',
         'genre_id',
         'release_date',
         'cover_path',
         'song_path',
+        'user_id',
     ];
 }

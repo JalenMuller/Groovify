@@ -1,16 +1,11 @@
 import { Sidebar } from "flowbite-react";
-import {
-    CursorArrowRippleIcon,
-    MusicalNoteIcon,
-    HomeIcon,
-    MagnifyingGlassIcon,
-    PlusIcon,
-} from "@heroicons/react/24/solid";
-import { GlobeAltIcon } from "@heroicons/react/24/outline";
+import { PlusIcon } from "@heroicons/react/24/solid";
 import Logo from "../assets/Logo";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { navLinks } from "../data/navLinks";
 
 function Navigation() {
+    const location = useLocation();
     return (
         <>
             {/*desktop/tablet navbar */}
@@ -25,42 +20,31 @@ function Navigation() {
                         <span className="font-semibold text-xl">Groovify</span>
                     </div>
                     <ul className="space-y-2 px-2">
-                        <li>
-                            <a
-                                href="#"
-                                className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group"
-                            >
-                                <HomeIcon className="h-6" />
-                                <span className="ml-3">Home</span>
-                            </a>
-                        </li>
-                        <li>
-                            <Link
-                                to="discover"
-                                className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group"
-                            >
-                                <GlobeAltIcon className="h-6" />
-                                <span className="ml-3">Discover</span>
-                            </Link>
-                        </li>
-                        <li>
-                            <a
-                                href="#"
-                                className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group"
-                            >
-                                <MagnifyingGlassIcon className="h-6" />
-                                <span className="ml-3">Search</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a
-                                href="#"
-                                className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group"
-                            >
-                                <MusicalNoteIcon className="h-6" />
-                                <span className="ml-3">My Library</span>
-                            </a>
-                        </li>
+                        {navLinks.map((link: any) => {
+                            // first index contains name/path object
+                            // second index contains the icon component
+                            let active = false;
+                            if (link[0].path == location.pathname) {
+                                active = true;
+                            }
+                            return (
+                                <li>
+                                    <Link
+                                        to={link[0].path}
+                                        className={`flex items-center p-2 text-base  rounded-lg transition duration-75 hover:bg-gray-100 hover:bg-gray-700 text-white group ${
+                                            active
+                                                ? "bg-gray-600/25 !text-blue-500"
+                                                : "text-white"
+                                        }`}
+                                    >
+                                        {link[1]}
+                                        <span className="ml-3">
+                                            {link[0].name}
+                                        </span>
+                                    </Link>
+                                </li>
+                            );
+                        })}
                     </ul>
                     <ul className="pt-5 px-2 mt-5 space-y-1 border-t border-gray-200 dark:border-gray-700">
                         <div className="flex items-center py-2 px-3 text-base font-normal text-gray-900 rounded-lg transition duration-75 dark:text-white group">

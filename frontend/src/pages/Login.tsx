@@ -2,14 +2,25 @@ import React from "react";
 import { Link, Navigate } from "react-router-dom";
 import axios from "../axios";
 import { useAuth } from "../contexts/AuthContext";
+import { getFieldErrors } from "../functions/generalFunctions";
+import LoadingDots from "../components/LoadingDots";
 
+interface FormFields {
+    email: null | string;
+    password: null | string;
+}
 export default function Login() {
     const { setUser, csrfToken } = useAuth();
     const [error, setError] = React.useState(null);
-
+    const [loading, setLoading] = React.useState(false);
+    const [fieldErrors, setFieldErrors] = React.useState({
+        email: null,
+        password: null,
+    });
     // login user
     const handleSubmit = async (e: any) => {
         e.preventDefault();
+        setLoading(true);
         const { email, password } = e.target.elements;
         const body = {
             email: email.value,
@@ -25,8 +36,17 @@ export default function Login() {
         } catch (error: any) {
             if (error.response.status === 401) {
                 setError(error.response.data.message);
+            } else {
+                let newState = fieldErrors;
+                let errors = getFieldErrors(error.response.data.errors);
+                errors.forEach((err: any) => {
+                    newState[err.field as keyof FormFields] = err.errorMessage;
+                    console.log(newState[err.field as keyof FormFields]);
+                });
+                setFieldErrors({ ...newState });
             }
         }
+        setLoading(false);
     };
 
     return (
@@ -41,7 +61,7 @@ export default function Login() {
                         src="https://dcodemania.com/img/logo.svg"
                         alt="logo"
                     />
-                    DCodeMania
+                    Groovify
                 </a>
                 <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
                     <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
@@ -92,6 +112,11 @@ export default function Login() {
                                     placeholder="name@company.com"
                                     required
                                 />
+                                {fieldErrors.email && (
+                                    <span className="text-sm text-red-500">
+                                        {fieldErrors.email}
+                                    </span>
+                                )}
                             </div>
                             <div>
                                 <label
@@ -108,13 +133,18 @@ export default function Login() {
                                     className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                     required
                                 />
+                                {fieldErrors.password && (
+                                    <span className="text-sm text-red-500">
+                                        {fieldErrors.password}
+                                    </span>
+                                )}
                             </div>
 
                             <button
                                 type="submit"
                                 className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
                             >
-                                Sign in
+                                {loading ? <LoadingDots /> : "Sign in"}
                             </button>
                             <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                                 Don't have an account yet?{" "}

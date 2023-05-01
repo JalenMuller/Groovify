@@ -14,6 +14,7 @@ const shortMonths = [
 ];
 
 export async function getDuration(file: File) {
+    if (!file) return;
     let p = new Promise(function (resolve, reject) {
         const reader = new FileReader();
         reader.readAsArrayBuffer(file);
@@ -38,10 +39,20 @@ export async function getDuration(file: File) {
     });
     return await p;
 }
-export function secondsToMinutes(seconds: number) {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds - minutes * 60;
-    return `${minutes}:${remainingSeconds}`;
+export function secondsToMinutes(time: number) {
+    time = Math.floor(time);
+    const minutes = Math.floor(time / 60);
+    let seconds: string;
+    let remainingSeconds = time - minutes * 60;
+
+    if (remainingSeconds === 0) {
+        seconds = "00";
+    } else if (remainingSeconds < 10) {
+        seconds = "0" + remainingSeconds;
+    } else {
+        seconds = remainingSeconds.toString();
+    }
+    return `${minutes}:${seconds}`;
 }
 export function timeToPrettyDate(time: number) {
     const date = new Date(time);
@@ -50,4 +61,14 @@ export function timeToPrettyDate(time: number) {
     let year = date.getFullYear();
 
     return `${month} ${day}, ${year}`;
+}
+
+export function getFieldErrors(error: object) {
+    const fields = Object.keys(error);
+    const errors = Object.values(error);
+    let errorObjects: object[] = [];
+    fields?.forEach((field, i) => {
+        errorObjects.push({ field: field, errorMessage: errors[i][0] });
+    });
+    return errorObjects;
 }

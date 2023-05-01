@@ -1,16 +1,17 @@
 import { UserIcon } from "@heroicons/react/24/solid";
 import { Link } from "react-router-dom";
-
+import { createPortal } from "react-dom";
+import { ReactNode } from "react";
 function ProfileDropdown(props: { name: string; logout: Function }) {
-    return (
+    let dropdown = (
         <>
             <button
                 id="dropdownDefaultButton"
                 data-dropdown-toggle="dropdown"
-                className="absolute top-0 right-0 h-12 text-sm"
+                className="absolute top-0 right-0 h-fit text-sm"
                 type="button"
             >
-                <div className="hidden md:flex justify-center max-h-7 mr-5 items-center border border-zinc-600 bg-zinc-900 font-semibold rounded-full text-gray-300 pl-5">
+                <div className="hidden md:flex justify-center max-h-7 mr-5 mt-5 items-center border border-zinc-600 bg-zinc-900 font-semibold rounded-full text-gray-300 pl-5">
                     <span className="mr-2">{props.name.split(" ")[0]}</span>
                     <div className="border border-zinc-500  rounded-full w-8 h-8 rounded-full bg-zinc-900 p-2">
                         <UserIcon />
@@ -64,6 +65,7 @@ function ProfileDropdown(props: { name: string; logout: Function }) {
             </div>
         </>
     );
+    return <div>{createPortal(dropdown, document.body)}</div>;
 }
 
 export default ProfileDropdown;

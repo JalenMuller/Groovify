@@ -22,7 +22,7 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/user', [AuthController::class, 'user']);
+    Route::post('/upload-song', [UploadController::class, 'uploadSong']);
 });
-Route::post('/upload-song', [UploadController::class, 'uploadSong']);
 Route::get('/songs', [MusicController::class, 'index_songs']);
 // Route::get('/genres', [MusicController::class, 'index_songs']);
