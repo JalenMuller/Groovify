@@ -1,8 +1,11 @@
 import { useState } from "react";
 import UploadMusic from "./UploadMusic";
+import { useParams } from "react-router-dom";
 
 function MyMusic() {
     const [currentTab, setCurrentTab] = useState("upload-music");
+    let { id } = useParams();
+    console.log(id);
     const returnTab = () => {
         switch (currentTab) {
             case "upload-music":

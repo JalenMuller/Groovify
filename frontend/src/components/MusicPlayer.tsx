@@ -5,6 +5,7 @@ import {
     createContext,
     useEffect,
     ChangeEvent,
+    SyntheticEvent,
 } from "react";
 import { MusicPlayerContext } from "../contexts/MusicPlayerContext";
 import {
@@ -44,9 +45,9 @@ function MusicPlayer() {
             if (!audioRef.current.paused) {
                 setCurrentTime(audioRef.current.currentTime);
             }
-        }, 1);
+        }, 1000);
         return () => clearInterval(interval);
-    }, []);
+    }, [audioRef.current]);
 
     useEffect(() => {
         if (audioRef.current) {
@@ -54,6 +55,17 @@ function MusicPlayer() {
             setPlaying(true);
         }
     }, [context.song]);
+    useEffect(() => {
+        function handleKeyDown(e: any) {
+            console.log(e.keyCode);
+        }
+
+        document.addEventListener("keydown", handleKeyDown);
+
+        return function cleanup() {
+            document.removeEventListener("keydown", handleKeyDown);
+        };
+    }, []);
 
     return (
         <>
@@ -63,7 +75,7 @@ function MusicPlayer() {
                         ref={audioRef}
                         src={`http://localhost:8000/storage/songs/${context.song.song_path}`}
                     />
-                    <div className="w-full px-5 h-16 flex justify-between items-center md:h-20 bg-black border-t border-gray-700">
+                    <div className="w-full px-5 h-20 md:h-16 flex justify-between items-center md:h-20 bg-black border-t border-gray-700">
                         <div className="w-1/3 flex">
                             <img
                                 src={
@@ -98,7 +110,7 @@ function MusicPlayer() {
                                 <ForwardIcon className="h-6" />
                             </div>
                             {/* todo: make component */}
-                            <div className="flex w-full pt-1 justify-center items-center ">
+                            <div className="hidden md:flex w-full pt-1 justify-center items-center ">
                                 <span className="text-xs text-gray-400 font-semibold mr-2">
                                     {secondsToMinutes(currentTime)}
                                 </span>
@@ -119,7 +131,7 @@ function MusicPlayer() {
                                 </span>
                             </div>
                         </div>
-                        <div className="w-1/3 h-full flex items-center justify-end">
+                        <div className="hidden md:flex w-1/3 h-full items-center justify-end">
                             <SpeakerWaveIcon className="h-5 mr-2 fill-gray-100" />
                             <input
                                 type="range"

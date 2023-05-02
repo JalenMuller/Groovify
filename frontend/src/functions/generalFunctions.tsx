@@ -64,6 +64,7 @@ export function timeToPrettyDate(time: number) {
 }
 
 export function getFieldErrors(error: object) {
+    if (!error) return [];
     const fields = Object.keys(error);
     const errors = Object.values(error);
     let errorObjects: object[] = [];

@@ -5,19 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Song extends Model
+class Album extends Model
 {
     use HasFactory;
+
     protected $fillable = [
-        'name',
+        'title',
+        'songs',
         'artist',
-        'features',
-        'length',
-        'album_id',
+        'cover',
         'genre',
-        'release_date',
-        'cover_path',
-        'song_path',
         'user_id',
+        'release_date',
     ];
 }

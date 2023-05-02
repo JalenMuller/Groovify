@@ -2,6 +2,7 @@ interface SongInterface {
     id: number;
     name: string;
     artist: string;
+    features: string;
     release_date: number;
     length: number;
     cover_path: string;

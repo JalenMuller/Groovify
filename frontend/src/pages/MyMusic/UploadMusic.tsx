@@ -1,5 +1,6 @@
 import { useState } from "react";
 import UploadSingleForm from "./UploadSingleForm";
+import UploadAlbumForm from "./UploadAlbumForm";
 
 function UploadMusic() {
     const [currentTab, setCurrentTab] = useState("single");
@@ -8,7 +9,7 @@ function UploadMusic() {
             case "single":
                 return <UploadSingleForm />;
             case "album":
-                return <div className="w-full h-full">test</div>;
+                return <UploadAlbumForm />;
             default:
                 return <UploadSingleForm />;
         }

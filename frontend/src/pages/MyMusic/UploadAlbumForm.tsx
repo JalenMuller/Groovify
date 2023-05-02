@@ -1,56 +1,53 @@
-import { ReactNode, useEffect, useState } from "react";
-import axios from "../../axios";
+import { useState, useEffect } from "react";
 import { useAuth } from "../../contexts/AuthContext";
-import StatusMessage from "../../components/StatusMessage";
-import { getDuration, getFieldErrors } from "../../functions/generalFunctions";
+import axios from "../../axios";
 import LoadingDots from "../../components/LoadingDots";
-import { PlusCircleIcon } from "@heroicons/react/24/outline";
+import {
+    getFieldErrors,
+    timeToPrettyDate,
+} from "../../functions/generalFunctions";
 import GenrePicker from "../../components/GenrePicker";
+import { Album } from "../../interfaces/AlbumInterface";
+import { CalendarIcon, PencilIcon } from "@heroicons/react/24/solid";
+
 interface FormFields {
-    name: null | string;
+    title: null | string;
     artist: null | string;
-    song: null | string;
     cover: null | string;
     release_date: null | string;
-    genre_id: null | string;
-    length: null | string;
+    genre: null | string;
 }
-function UploadSingleForm() {
+
+function UploadAlbumForm() {
     const { csrfToken } = useAuth();
-    const [statusMessage, setStatusMessage] = useState<any>(false);
     const [loading, setLoading] = useState(false);
-    let [featureInputs, setFeatureInputs] = useState<ReactNode[]>([]);
+    const [myAlbums, setMyAlbums] = useState<null | Album[]>(null);
+    const [statusMessage, setStatusMessage] = useState<any>(false);
     const [fieldErrors, setFieldErrors] = useState<FormFields>({
-        name: null,
+        title: null,
         artist: null,
-        song: null,
         cover: null,
         release_date: null,
-        genre_id: null,
-        length: null,
+        genre: null,
     });
-    const addFeatureInput = () => {
-        console.log("added?");
-        setFeatureInputs(
-            featureInputs.concat(
-                <div className="flex items-center h-10 mb-2">
-                    <input
-                        type="text"
-                        name="feature"
-                        id="feature"
-                        className="block h-full w-full text-sm border rounded-lg text-white focus:outline-none bg-gray-700 border-gray-600 placeholder-gray-400"
-                        // required
-                    />
-                </div>
-            )
-        );
+    const fetchMyAlbums = async () => {
+        try {
+            const res = await axios.get("/my-albums");
+            if (res.status === 200) {
+                setMyAlbums(res.data);
+            }
+        } catch (error: any) {
+            console.log(error);
+        }
     };
-    const handleSubmit = async (e: any) => {
+    useEffect(() => {
+        fetchMyAlbums();
+    }, []);
+    const createAlbum = async (e: any) => {
         e.preventDefault();
         setLoading(true);
 
-        const { name, artist, song, cover, release_date, genre } =
-            e.target.elements;
+        const { title, artist, cover, release_date, genre } = e.target.elements;
         let features: string[] = [];
         let featureInputElements = document.querySelectorAll("#feature");
         featureInputElements.forEach((input) => {
@@ -59,19 +56,13 @@ function UploadSingleForm() {
                 features.push(value);
             }
         });
-        let songLength = "";
-        // client is able to manipulate song length client side, possible to-do
-        await getDuration(song.files[0]).then(function (value: any) {
-            songLength = Math.floor(value).toString();
-        });
+
         let time = new Date(release_date.value).getTime();
         const bodyFormData = new FormData();
-        bodyFormData.append("name", name.value);
+        bodyFormData.append("title", title.value);
         bodyFormData.append("artist", artist.value);
         bodyFormData.append("cover", cover.files[0]);
-        bodyFormData.append("song", song.files[0]);
-        bodyFormData.append("genre", genre.value);
-        bodyFormData.append("length", songLength);
+        bodyFormData.append("genre_id", genre.value);
         if (time) {
             bodyFormData.append("release_date", time.toString());
         }
@@ -83,7 +74,7 @@ function UploadSingleForm() {
         await csrfToken();
         axios({
             method: "post",
-            url: "/upload-song",
+            url: "/create-album",
             data: bodyFormData,
             headers: { "Content-Type": "multipart/form-data" },
         })
@@ -96,6 +87,7 @@ function UploadSingleForm() {
             })
             .catch((err) => {
                 const errors = getFieldErrors(err.response.data.errors);
+                console.log(errors);
                 if (errors.length === 0)
                     // No errors returned? Send basic error message.
                     setStatusMessage({
@@ -117,43 +109,71 @@ function UploadSingleForm() {
 
         setLoading(false);
     };
-
-    // useEffect(() => {}, [fieldErrors]);
     return (
-        <>
+        <div className="w-full md:w-3/4 mx-auto px-5">
+            {myAlbums && (
+                <h2 className="font-semibold text-xl leading-7 mt-5 mb-3">
+                    My albums
+                </h2>
+            )}
+            {myAlbums?.map((album) => (
+                <div className="flex w-full justify-between items-center bg-zinc-900/50 border border-gray-600 px-4 py-2 rounded-lg mb-2">
+                    <div className="flex w-3/5 items-center">
+                        <img
+                            src={
+                                "http://localhost:8000/storage/images/covers/" +
+                                album.cover
+                            }
+                            className="h-10 w-10 rounded-sm"
+                        />
+                        <div className="flex w-full flex-col ml-3">
+                            <span className="text-white font-semibold truncate">
+                                {album.title}
+                            </span>
+                            <span className="text-gray-400 text-sm truncate">
+                                {album.artist}
+                            </span>
+                        </div>
+                    </div>
+                    <span className="hidden md:flex items-center text-sm">
+                        <CalendarIcon className="h-4 mr-2" />
+
+                        {timeToPrettyDate(album.release_date)}
+                    </span>
+                    <button
+                        type="button"
+                        className="focus:ring-4 font-medium rounded-lg text-sm p-1 bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-blue-800"
+                    >
+                        <PencilIcon className="h-6" />
+                    </button>
+                </div>
+            ))}
             <form
-                className=" w-full md:w-3/4 px-5 mx-auto space-y-4 mt-5 bg-zinc-800"
+                className="space-y-4 mt-2"
                 action="#"
                 method="post"
-                onSubmit={handleSubmit}
+                onSubmit={createAlbum}
             >
-                {statusMessage && (
-                    <StatusMessage
-                        type={statusMessage.type}
-                        message={statusMessage.message}
-                        className="absolute top-5 left-0 right-0 mx-auto md:mr-48"
-                    />
-                )}
                 <h2 className="font-semibold text-xl leading-7">
-                    Publish a new song
+                    Create a new album
                 </h2>
                 <div>
                     <label
-                        htmlFor="name"
+                        htmlFor="title"
                         className="block mb-2 text-sm font-medium text-gray-200"
                     >
-                        Song name
+                        Title
                     </label>
                     <input
                         type="text"
-                        name="name"
-                        id="name"
-                        className="bg-gray-50 border border-gray-300 text-white sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        name="title"
+                        id="title"
+                        className="border sm:text-sm rounded-lg block w-full bg-gray-700 border-gray-600 placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500"
                         // required
                     />
-                    {fieldErrors.name && (
+                    {fieldErrors.title && (
                         <span className="text-sm text-red-500">
-                            {fieldErrors.name}
+                            {fieldErrors.title}
                         </span>
                     )}
                 </div>
@@ -168,7 +188,7 @@ function UploadSingleForm() {
                         type="text"
                         name="artist"
                         id="artist"
-                        className="block w-full text-sm border rounded-lg text-white focus:outline-none bg-gray-700 border-gray-600 placeholder-gray-400"
+                        className="border sm:text-sm rounded-lg block w-full bg-gray-700 border-gray-600 placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500"
                         // required
                     />
                     {fieldErrors.artist && (
@@ -178,31 +198,12 @@ function UploadSingleForm() {
                     )}
                 </div>
                 <div>
-                    <label
-                        htmlFor="feature"
-                        className="block mb-2 text-sm font-medium text-gray-200"
-                    >
-                        Features
-                    </label>
-                    <div className="flex items-center h-10 mb-2">
-                        <input
-                            type="text"
-                            name="feature"
-                            id="feature"
-                            className="block h-full w-full text-sm border rounded-lg text-white focus:outline-none bg-gray-700 border-gray-600 placeholder-gray-400"
-                            // required
-                        />
-                        <div
-                            onClick={() => addFeatureInput()}
-                            className="flex items-center px-1 h-full ml-2 border border-gray-300 text-white rounded-lg focus:ring-primary-600 focus:border-primary-600 bg-gray-700 border-gray-600 cursor-pointer "
-                        >
-                            <PlusCircleIcon className="h-8" />
-                        </div>
-                    </div>
-                    {featureInputs}
-                </div>
-                <div>
                     <GenrePicker />
+                    {fieldErrors.genre && (
+                        <span className="text-sm text-red-500">
+                            {fieldErrors.genre}
+                        </span>
+                    )}
                 </div>
 
                 <div>
@@ -230,7 +231,7 @@ function UploadSingleForm() {
                         htmlFor="cover"
                         className="block mb-2 text-sm font-medium text-gray-200"
                     >
-                        Cover image
+                        Album cover
                     </label>
                     <input
                         type="file"
@@ -246,37 +247,15 @@ function UploadSingleForm() {
                         </span>
                     )}
                 </div>
-                <div>
-                    <label
-                        htmlFor="song"
-                        className="block mb-2 text-sm font-medium text-gray-200"
-                    >
-                        Upload song
-                    </label>
-                    <input
-                        type="file"
-                        name="song"
-                        id="song"
-                        className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-                        accept=".mp3"
-                        // required
-                    />
-                    {fieldErrors.song && (
-                        <span className="text-sm text-red-500">
-                            {fieldErrors.song}
-                        </span>
-                    )}
-                </div>
-
                 <button
                     type="submit"
                     className="w-full mb-auto text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
                 >
-                    {loading ? <LoadingDots /> : "Publish Song"}
+                    {loading ? <LoadingDots /> : "Create Album"}
                 </button>
             </form>
-        </>
+        </div>
     );
 }
 
-export default UploadSingleForm;
+export default UploadAlbumForm;

@@ -18,7 +18,7 @@ const router = createBrowserRouter([
                 element: <Login />,
             },
             {
-                path: "/register",
+                path: "register",
                 element: <Register />,
             },
         ],
@@ -28,19 +28,19 @@ const router = createBrowserRouter([
         element: <ProtectedLayout />,
         children: [
             {
-                path: "/about",
+                path: "about",
                 element: <About />,
             },
             {
-                path: "/profile",
+                path: "profile",
                 element: <Profile />,
             },
             {
-                path: "/mymusic",
+                path: "mymusic",
                 element: <MyMusic />,
             },
             {
-                path: "/discover",
+                path: "discover",
                 element: <Discover />,
             },
         ],
