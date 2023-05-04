@@ -7,6 +7,9 @@ interface SongInterface {
     length: number;
     cover_path: string;
     song_path: string;
+    album_id?: number;
+    album_order?: number;
+    album_title?: string;
     // updated_at: string;
     // created_at: string;
 }

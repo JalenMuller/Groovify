@@ -14,7 +14,7 @@ class Album extends Model
         'songs',
         'artist',
         'cover',
-        'genre',
+        'genre_id',
         'user_id',
         'release_date',
     ];

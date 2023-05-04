@@ -43,7 +43,7 @@ function SongRow(props: { song: Song; i: number }) {
                         "http://localhost:8000/storage/images/covers/" +
                         song.cover_path
                     }
-                    className="h-10 mr-3"
+                    className="h-10 w-10 mr-3 rounded-sm"
                 />
                 <div className="flex flex-col">
                     <p
@@ -61,7 +61,9 @@ function SongRow(props: { song: Song; i: number }) {
                     </p>
                 </div>
             </td>
-            <td className="px-6 py-2 hidden md:table-cell truncate">None</td>
+            <td className="px-6 py-2 hidden md:table-cell truncate">
+                {song.album_title ?? "None"}
+            </td>
             <td className="px-6 py-2 hidden md:table-cell">
                 {timeToPrettyDate(song.release_date)}
             </td>

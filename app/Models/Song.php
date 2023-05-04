@@ -14,6 +14,7 @@ class Song extends Model
         'features',
         'length',
         'album_id',
+        'album_order',
         'genre',
         'release_date',
         'cover_path',

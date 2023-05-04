@@ -17,6 +17,7 @@ return new class extends Migration {
             $table->string("artist");
             $table->string("cover");
             $table->bigInteger("release_date");
+            $table->bigInteger("song_amount")->default(0);
             $table->unsignedBigInteger('genre_id');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');

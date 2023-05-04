@@ -5,9 +5,6 @@ import { useAuth } from "../contexts/AuthContext";
 
 export default function Register() {
     const { setUser } = useAuth();
-    const [nameError, setNameError] = React.useState("");
-    const [emailError, setEmailError] = React.useState("");
-    const [passwordError, setPasswordError] = React.useState("");
     // register user
     const handleSubmit = async (e: any) => {
         e.preventDefault();

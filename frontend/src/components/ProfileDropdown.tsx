@@ -1,8 +1,15 @@
 import { UserIcon } from "@heroicons/react/24/solid";
 import { Link } from "react-router-dom";
 import { createPortal } from "react-dom";
-import { ReactNode } from "react";
+import { useContext } from "react";
+import { MusicPlayerContext } from "../contexts/MusicPlayerContext";
 function ProfileDropdown(props: { name: string; logout: Function }) {
+    const context: any = useContext(MusicPlayerContext);
+
+    const clearCurrentSong = (e: any) => {
+        e.preventDefault();
+        context.setSong({});
+    };
     let dropdown = (
         <>
             <button
@@ -45,7 +52,7 @@ function ProfileDropdown(props: { name: string; logout: Function }) {
                             Settings
                         </a>
                     </li>
-                    <li>
+                    <li onClick={clearCurrentSong}>
                         <Link
                             to="/mymusic"
                             className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"

@@ -24,9 +24,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/user', [AuthController::class, 'user']);
     Route::post('/upload-song', [UploadController::class, 'uploadSong']);
-    Route::get('/songs', [MusicController::class, 'index_songs']);
+    Route::post('/upload-album-song', [UploadController::class, 'upload_album_song']);
     Route::get('/genres', [GenreController::class, 'index_genres']);
     Route::get('/my-albums', [MusicController::class, 'my_albums']);
+    Route::post('/create-album', [UploadController::class, 'createAlbum']);
 });
-Route::post('/create-album', [UploadController::class, 'createAlbum']);
+Route::get('/songs', [MusicController::class, 'index_songs']);
+Route::get('/album/{id}', [MusicController::class, 'index_album']);
 // Route::get('/genres', [MusicController::class, 'index_songs']);

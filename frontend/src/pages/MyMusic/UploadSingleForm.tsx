@@ -12,22 +12,20 @@ interface FormFields {
     song: null | string;
     cover: null | string;
     release_date: null | string;
-    genre_id: null | string;
-    length: null | string;
+    genre: null | string;
 }
 function UploadSingleForm() {
     const { csrfToken } = useAuth();
     const [statusMessage, setStatusMessage] = useState<any>(false);
     const [loading, setLoading] = useState(false);
-    let [featureInputs, setFeatureInputs] = useState<ReactNode[]>([]);
+    const [featureInputs, setFeatureInputs] = useState<ReactNode[]>([]);
     const [fieldErrors, setFieldErrors] = useState<FormFields>({
         name: null,
         artist: null,
         song: null,
         cover: null,
         release_date: null,
-        genre_id: null,
-        length: null,
+        genre: null,
     });
     const addFeatureInput = () => {
         console.log("added?");

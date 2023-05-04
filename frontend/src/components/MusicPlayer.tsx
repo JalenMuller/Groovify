@@ -27,6 +27,7 @@ function MusicPlayer() {
         audioRef.current.volume = percentage;
     };
     const toggleAudio = () => {
+        if (!audioRef.current) return;
         if (audioRef.current.paused) {
             audioRef.current.play();
             setPlaying(true);
@@ -57,7 +58,9 @@ function MusicPlayer() {
     }, [context.song]);
     useEffect(() => {
         function handleKeyDown(e: any) {
-            console.log(e.keyCode);
+            if (e.keyCode === 32) {
+                toggleAudio();
+            }
         }
 
         document.addEventListener("keydown", handleKeyDown);

@@ -68,7 +68,7 @@ export default function DefaultLayout() {
                             logout={handleLogout}
                         />
                         <Outlet />
-                        <MusicPlayer />
+                        {Object.keys(song).length > 0 && <MusicPlayer />}
                     </main>
                 </div>
             </MusicPlayerContext.Provider>

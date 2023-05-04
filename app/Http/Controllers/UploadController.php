@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AlbumSongRequest;
 use App\Http\Requests\SongUploadRequest;
 use App\Http\Requests\AlbumRequest;
 use App\Http\Resources\SongResource;
@@ -26,11 +27,15 @@ class UploadController extends Controller
         } else {
             return response()->json(['message' => 'Something went wrong with your song upload.']);
         }
-
+        if (isset($data['features'])) {
+            $features = $data['features'];
+        } else {
+            $features = NULL;
+        }
         $song = Song::create([
             'name' => $data['name'],
             'artist' => $data['artist'],
-            'features' => $data['features'],
+            'features' => $features,
             'length' => $data['length'],
             'release_date' => $data['release_date'],
             'genre_id' => $data['genre'],
@@ -39,6 +44,44 @@ class UploadController extends Controller
             'user_id' => $request->user()['id']
         ]);
 
+        return response()->json([
+            'message' => "Successfully published song!",
+            'song' => new SongResource($song),
+        ]);
+    }
+    public function upload_album_song(AlbumSongRequest $request)
+    {
+        $data = $request->validated();
+        $album_id = $data['album_id'];
+        $album = Album::where('id', $album_id)->first();
+
+        if ($request->hasFile('song')) {
+            $request->file('song')->storePublicly('public/songs');
+            $song_file_name = $request->file('song')->hashName();
+        } else {
+            return response()->json(['message' => 'Something went wrong with your song upload.']);
+        }
+        if (isset($data['features'])) {
+            $features = $data['features'];
+        } else {
+            $features = NULL;
+        }
+        $song = Song::create([
+            'name' => $data['name'],
+            'artist' => $album['artist'],
+            'features' => $features,
+            'length' => $data['length'],
+            'release_date' => $album['release_date'],
+            'genre_id' => $data['genre'],
+            'album_id' => $album['id'],
+            'album_order' => $album['song_amount'] + 1,
+            'song_path' => $song_file_name,
+            'cover_path' => $album['cover'],
+            'user_id' => $request->user()['id']
+        ]);
+
+        $album->song_amount = $album['song_amount'] + 1;
+        $album->save();
         return response()->json([
             'message' => "Successfully published song!",
             'song' => new SongResource($song),
@@ -66,7 +109,7 @@ class UploadController extends Controller
 
         return response()->json([
             'message' => "Successfully created album!",
-            'song' => $album,
+            'album' => $album,
         ]);
     }
 }
