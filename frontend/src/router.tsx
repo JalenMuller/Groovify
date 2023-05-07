@@ -47,7 +47,7 @@ const router = createBrowserRouter([
                 element: <Search />,
             },
             {
-                path: "dashboard/mymusic",
+                path: "dashboard/mymusic/:tab?",
                 element: <MyMusic />,
             },
             {

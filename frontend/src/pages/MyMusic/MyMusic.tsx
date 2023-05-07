@@ -1,12 +1,13 @@
 import { useState } from "react";
 import UploadMusic from "./UploadMusic/UploadMusic";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import MyLibrary from "./MyLibrary/MyLibrary";
 
 function MyMusic() {
     const [currentTab, setCurrentTab] = useState("upload-music");
-    let { id } = useParams();
-    console.log(id);
+    const params = useParams();
+    const location = useLocation();
+    console.log(location);
     const returnTab = () => {
         switch (currentTab) {
             case "upload-music":
@@ -50,6 +51,7 @@ function MyMusic() {
                         >
                             <span className="m-auto">My Library</span>
                         </li>
+
                         <li
                             className={`inline-flex w-full py-2 px-4 text-white bg-gray-600/25 group rounded-md cursor-pointer ${
                                 currentTab == "artist-profile"
