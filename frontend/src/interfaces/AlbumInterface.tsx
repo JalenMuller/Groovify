@@ -3,6 +3,7 @@ interface AlbumInterface {
     title: string;
     genre_id: string;
     artist: string;
+    song_amount: string;
     release_date: number;
     cover: string;
 }

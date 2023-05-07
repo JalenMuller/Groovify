@@ -1,6 +1,7 @@
 import { useState } from "react";
-import UploadMusic from "./UploadMusic";
+import UploadMusic from "./UploadMusic/UploadMusic";
 import { useParams } from "react-router-dom";
+import MyLibrary from "./MyLibrary/MyLibrary";
 
 function MyMusic() {
     const [currentTab, setCurrentTab] = useState("upload-music");
@@ -10,8 +11,8 @@ function MyMusic() {
         switch (currentTab) {
             case "upload-music":
                 return <UploadMusic />;
-            case "my-music":
-                return <div className="w-full h-full">test</div>;
+            case "my-library":
+                return <MyLibrary />;
             case "artist-profile":
                 return <div className="w-full h-full">profile</div>;
             default:
@@ -41,13 +42,13 @@ function MyMusic() {
                         </li>
                         <li
                             className={`inline-flex w-full py-2 px-4 bg-gray-600/25 group rounded-md cursor-pointer ${
-                                currentTab == "my-music"
+                                currentTab == "my-library"
                                     ? "text-blue-500"
                                     : "text-white"
                             }`}
-                            onClick={() => setCurrentTab("my-music")}
+                            onClick={() => setCurrentTab("my-library")}
                         >
-                            <span className="m-auto">My Music</span>
+                            <span className="m-auto">My Library</span>
                         </li>
                         <li
                             className={`inline-flex w-full py-2 px-4 text-white bg-gray-600/25 group rounded-md cursor-pointer ${

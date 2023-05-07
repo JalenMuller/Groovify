@@ -1,11 +1,14 @@
 import { ReactNode, useEffect, useState } from "react";
-import axios from "../../axios";
-import { useAuth } from "../../contexts/AuthContext";
-import StatusMessage from "../../components/StatusMessage";
-import { getDuration, getFieldErrors } from "../../functions/generalFunctions";
-import LoadingDots from "../../components/LoadingDots";
+import axios from "../../../axios";
+import { useAuth } from "../../../contexts/AuthContext";
+import StatusMessage from "../../../components/StatusMessage";
+import {
+    getDuration,
+    getFieldErrors,
+} from "../../../functions/generalFunctions";
+import LoadingDots from "../../../components/LoadingDots";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
-import GenrePicker from "../../components/GenrePicker";
+import GenrePicker from "../../../components/GenrePicker";
 interface FormFields {
     name: null | string;
     artist: null | string;
@@ -120,7 +123,7 @@ function UploadSingleForm() {
     return (
         <>
             <form
-                className=" w-full md:w-3/4 px-5 mx-auto space-y-4 mt-5 bg-zinc-800"
+                className="overflow-y-auto h-4/5 w-full md:w-3/4 px-5 md:px-10 mx-auto space-y-4 mt-5 bg-zinc-800"
                 action="#"
                 method="post"
                 onSubmit={handleSubmit}

@@ -13,16 +13,15 @@ class MusicController extends Controller
 {
     public function index_songs()
     {
-        // $songs = Song::all()->sortBy("created_at");
-        // foreach ($songs as $song) {
-        //     if ($song['album_id'] !== NULL) {
-        //         return response()->json('has album');
-        //     }
-        // }
         $songs = DB::table('songs')
             ->leftJoin('albums', 'songs.album_id', '=', 'albums.id')
             ->select('songs.*', 'albums.title as album_title')
-            ->get();
+            ->paginate(100)->shuffle();
+        return response()->json($songs);
+    }
+    public function index_albums()
+    {
+        $songs = Album::where('song_amount', '>', '0')->get();
         return response()->json($songs);
     }
 
@@ -32,11 +31,26 @@ class MusicController extends Controller
         $albums = Album::where("user_id", $user_id)->get();
         return response()->json($albums);
     }
+    public function my_singles(Request $request)
+    {
+        $user_id = $request->user()['id'];
+        $songs = Song::where([["user_id", $user_id], ["album_id", '=', null]])->get();
+        return response()->json($songs);
+    }
     public function index_album($id)
     {
         $album = Album::where('id', $id)->first();
         $songs = Song::where('album_id', $id)->get();
 
         return response()->json(['album' => $album, 'songs' => $songs]);
+    }
+    public function search(Request $request)
+    {
+        if ($request->type == "songs") {
+            $result = Song::where('name', 'like', "%{$request->value}%")->get();
+        } else {
+            $result = Album::where('title', 'like', "%{$request->value}%")->get();
+        }
+        return response()->json($result);
     }
 }

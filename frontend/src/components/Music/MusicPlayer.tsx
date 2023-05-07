@@ -7,15 +7,14 @@ import {
     ChangeEvent,
     SyntheticEvent,
 } from "react";
-import { MusicPlayerContext } from "../contexts/MusicPlayerContext";
+import { MusicPlayerContext } from "../../contexts/MusicPlayerContext";
 import {
-    ForwardIcon,
-    BackwardIcon,
     SpeakerWaveIcon,
     PlayCircleIcon,
     PauseCircleIcon,
 } from "@heroicons/react/24/solid";
-import { secondsToMinutes } from "../functions/generalFunctions";
+import { SkipEndFill, SkipStartFill } from "../../assets/Icons";
+import { secondsToMinutes } from "../../functions/generalFunctions";
 function MusicPlayer() {
     const context: any = useContext(MusicPlayerContext);
     const [playing, setPlaying] = useState(false);
@@ -23,6 +22,7 @@ function MusicPlayer() {
     const audioRef: any = useRef(null);
 
     const adjustVolume = (e: any) => {
+        // percentage is decimal
         let percentage = parseInt(e.target.value) / 100;
         audioRef.current.volume = percentage;
     };
@@ -36,7 +36,58 @@ function MusicPlayer() {
             setPlaying(false);
         }
     };
+    const forward = () => {
+        if (context.queue.forwardQueue.length === 0) {
+            restartSong(true);
+            return;
+        }
+        const currentSong = context.song;
+        // skip to next song in the forward queue
+        context.setSong(context.queue.forwardQueue[0]);
+        // prepare a new queue with the forwarded song removed
+        const newQueue = context.queue.forwardQueue;
+        newQueue.splice(0, 1);
+        //
+        context.setQueue({
+            prevQueue: [...context.queue.prevQueue, currentSong],
+            forwardQueue: newQueue,
+        });
+    };
+    const previous = () => {
+        // if song has been playing for a bit restart first
+        if (audioRef.current.currentTime > 3) {
+            restartSong(false);
+            return;
+        }
+        // if no song in queue restart current song
+        if (context.queue.prevQueue.length === 0) {
+            restartSong(true);
+            return;
+        }
+        const currentSong = context.song;
+        // play the previous song in queue then remove that song from the previous queue
+        context.setSong(
+            context.queue.prevQueue[context.queue.prevQueue.length - 1]
+        );
+        const newQueue = context.queue.prevQueue;
+        newQueue.splice(newQueue.length - 1, 1);
+        context.setQueue({
+            prevQueue: newQueue,
+            forwardQueue: [currentSong, ...context.queue.forwardQueue],
+        });
+    };
+    const restartSong = (pauseSong: boolean) => {
+        audioRef.current.currentTime = 0;
+        setCurrentTime(0);
+        if (pauseSong) {
+            audioRef.current.pause();
+            setPlaying(false);
+        } else {
+            setPlaying(true);
+        }
+    };
     useEffect(() => {
+        // update current time state every second
         if (audioRef.current) {
             setCurrentTime(audioRef.current.currentTime);
         } else {
@@ -79,7 +130,7 @@ function MusicPlayer() {
                         src={`http://localhost:8000/storage/songs/${context.song.song_path}`}
                     />
                     <div className="w-full px-5 h-20 md:h-16 flex justify-between items-center md:h-20 bg-black border-t border-gray-700">
-                        <div className="w-1/3 flex">
+                        <div className="w-2/3 md:w-1/3 flex">
                             <img
                                 src={
                                     "http://localhost:8000/storage/images/covers/" +
@@ -96,24 +147,28 @@ function MusicPlayer() {
                                 </p>
                             </div>
                         </div>
-                        <div className="w-1/3 h-full flex flex-col items-center">
-                            <div className="flex flex-row h-3/5 w-full items-center pt-3 justify-center">
-                                <BackwardIcon className="h-6 mr-2" />
+                        <div className="w-1/3 h-full flex flex-col items-center justify-center">
+                            <div className="flex flex-row h-3/5 w-full items-center justify-center">
+                                <div onClick={previous}>
+                                    <SkipStartFill className="h-6 mr-2 cursor-pointer" />
+                                </div>
                                 {playing ? (
                                     <PauseCircleIcon
-                                        className="h-8 mr-3"
+                                        className="h-8 mr-3 cursor-pointer"
                                         onClick={toggleAudio}
                                     />
                                 ) : (
                                     <PlayCircleIcon
-                                        className="h-8 mr-3"
+                                        className="h-8 mr-3 cursor-pointer"
                                         onClick={toggleAudio}
                                     />
                                 )}
-                                <ForwardIcon className="h-6" />
+                                <div onClick={forward}>
+                                    <SkipEndFill className="h-6 cursor-pointer" />
+                                </div>
                             </div>
                             {/* todo: make component */}
-                            <div className="hidden md:flex w-full pt-1 justify-center items-center ">
+                            <div className="hidden md:flex w-full justify-center items-center ">
                                 <span className="text-xs text-gray-400 font-semibold mr-2">
                                     {secondsToMinutes(currentTime)}
                                 </span>

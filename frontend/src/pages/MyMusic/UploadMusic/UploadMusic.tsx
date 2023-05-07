@@ -18,7 +18,7 @@ function UploadMusic() {
         "border-transparent hover:border-gray-300 hover:text-gray-300";
     const activeStyle = "active text-blue-600 border-blue-600";
     return (
-        <div className="w-full h-full overflow-y-auto">
+        <div className="w-full h-full overflow-y-hidden">
             <div className="text-xs mt-2 md:mt-5 md:text-sm font-medium text-center border-b text-gray-400 border-gray-700">
                 <ul className="flex flex-wrap">
                     <li

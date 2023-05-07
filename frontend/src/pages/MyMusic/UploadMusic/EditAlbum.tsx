@@ -7,19 +7,19 @@ import {
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import { ReactNode, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Song } from "../../interfaces/SongInterface";
+import { Song } from "../../../interfaces/SongInterface";
 import { useLocation, redirect } from "react-router-dom";
-import { Album } from "../../interfaces/AlbumInterface";
+import { Album } from "../../../interfaces/AlbumInterface";
 import {
     getDuration,
     getFieldErrors,
     timeToPrettyDate,
-} from "../../functions/generalFunctions";
-import LoadingDots from "../../components/LoadingDots";
-import GenrePicker from "../../components/GenrePicker";
-import { useAuth } from "../../contexts/AuthContext";
-import axios from "../../axios";
-import LoadingSpinner from "../../components/LoadingSpinner";
+} from "../../../functions/generalFunctions";
+import LoadingDots from "../../../components/LoadingDots";
+import GenrePicker from "../../../components/GenrePicker";
+import { useAuth } from "../../../contexts/AuthContext";
+import axios from "../../../axios";
+import LoadingSpinner from "../../../components/LoadingSpinner";
 
 interface FormFields {
     name: null | string;
@@ -143,7 +143,7 @@ function EditAlbum() {
     return (
         <div className="w-full h-full flex-col p-4 md:px-5 overflow-y-auto">
             {loading && <LoadingSpinner />}
-            <Link to="/mymusic">
+            <Link to="/dashboard/mymusic" className="absolute z-40">
                 <span className="flex items-center text-underline">
                     <ArrowLeftIcon className="h-5 mr-2" />
                     My Albums

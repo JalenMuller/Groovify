@@ -3,18 +3,24 @@ import { Navigate, Outlet } from "react-router-dom";
 import axios from "../axios";
 import { useAuth } from "../contexts/AuthContext";
 import Navigation from "../components/Navigation";
-import ProfileDropdown from "../components/ProfileDropdown";
+import TopBar from "../components/TopBar";
 import { initFlowbite } from "flowbite";
-import MusicPlayer from "../components/MusicPlayer";
+import MusicPlayer from "../components/Music/MusicPlayer";
 import { MusicPlayerContext } from "../contexts/MusicPlayerContext";
 import { Song } from "../interfaces/SongInterface";
 
 export default function DefaultLayout() {
     const { user, setUser }: any = useAuth();
-    const [song, setSong] = useState({});
-
-    const setState = (newSong: Song) => {
+    const [song, setSong] = useState<{} | Song>({});
+    const [queue, setQueue] = useState<any>({
+        prevQueue: {},
+        forwardQueue: {},
+    });
+    const setSongState = (newSong: Song) => {
         setSong(newSong);
+    };
+    const setQueueState = (queue: any) => {
+        setQueue(queue);
     };
     // check if user is logged in or not from server
     useEffect(() => {
@@ -56,17 +62,19 @@ export default function DefaultLayout() {
             <MusicPlayerContext.Provider
                 value={{
                     song: song,
-                    setSong: (newSong: Song) => setState(newSong),
+                    queue: queue,
+                    setSong: (newSong: Song) => setSongState(newSong),
+                    setQueue: (queue) => setQueueState(queue),
                 }}
             >
-                <div className="flex h-screen w-screen bg-zinc-900 overflow-hidden">
+                <div className="absolute flex h-screen w-screen bg-zinc-900 overflow-hidden">
                     <Navigation />
-                    <main className="flex flex-col h-full w-full pb-16 md:pb-0 flex-col text-white">
-                        {/* <div className="h-12 bg-transparent" id="topbar-spacer" /> */}
-                        <ProfileDropdown
-                            name={user.name}
-                            logout={handleLogout}
-                        />
+                    <main className="relative flex flex-col h-full w-full pb-16 md:pb-0 flex-col text-white">
+                        <TopBar name={user.name} logout={handleLogout} />
+                        {/* <div
+                            className="h-12 bg-transparent"
+                            id="topbar-spacer"
+                        /> */}
                         <Outlet />
                         {Object.keys(song).length > 0 && <MusicPlayer />}
                     </main>

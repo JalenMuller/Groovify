@@ -21,14 +21,21 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
+    // auth
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/user', [AuthController::class, 'user']);
+    // uploads
     Route::post('/upload-song', [UploadController::class, 'uploadSong']);
     Route::post('/upload-album-song', [UploadController::class, 'upload_album_song']);
-    Route::get('/genres', [GenreController::class, 'index_genres']);
-    Route::get('/my-albums', [MusicController::class, 'my_albums']);
     Route::post('/create-album', [UploadController::class, 'createAlbum']);
+    // fetch music
+    Route::get('/recent-songs', [MusicController::class, 'index_songs']);
+    Route::get('/recent-albums', [MusicController::class, 'index_albums']);
+    Route::get('/album/{id}', [MusicController::class, 'index_album']);
+    Route::get('/my-albums', [MusicController::class, 'my_albums']);
+    Route::get('/my-singles', [MusicController::class, 'my_singles']);
+    Route::get('/search', [MusicController::class, 'search']);
+    // general
+    Route::get('/genres', [GenreController::class, 'index_genres']);
 });
-Route::get('/songs', [MusicController::class, 'index_songs']);
-Route::get('/album/{id}', [MusicController::class, 'index_album']);
 // Route::get('/genres', [MusicController::class, 'index_songs']);

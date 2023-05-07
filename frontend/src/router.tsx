@@ -6,8 +6,10 @@ import Register from "./pages/Register";
 import ProtectedLayout from "./layouts/ProtectedLayout";
 import GuestLayout from "./layouts/GuestLayout";
 import MyMusic from "./pages/MyMusic/MyMusic";
-import Discover from "./pages/Discover";
-import EditAlbum from "./pages/MyMusic/EditAlbum";
+import Discover from "./pages/Discover/Discover";
+import EditAlbum from "./pages/MyMusic/UploadMusic/EditAlbum";
+import ViewAlbum from "./components/Music/ViewAlbum";
+import Search from "./pages/Search";
 
 const router = createBrowserRouter([
     {
@@ -41,11 +43,19 @@ const router = createBrowserRouter([
                 element: <Discover />,
             },
             {
-                path: "mymusic",
+                path: "search",
+                element: <Search />,
+            },
+            {
+                path: "dashboard/mymusic",
                 element: <MyMusic />,
             },
             {
-                path: "mymusic/edit-album/:id",
+                path: "album/:id",
+                element: <ViewAlbum />,
+            },
+            {
+                path: "dashboard/mymusic/edit-album/:id",
                 element: <EditAlbum />,
             },
         ],
