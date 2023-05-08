@@ -9,25 +9,41 @@ import {
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import { timeToPrettyDate } from "../../../functions/generalFunctions";
 import LoadingSpinner from "../../../components/LoadingSpinner";
+import { Link } from "react-router-dom";
 
 function MySingles() {
     const [loading, setLoading] = useState(false);
     const [songs, setSongs] = useState<Song[]>([]);
 
-    useEffect(() => {
-        const fetchMySongs = async () => {
-            setLoading(true);
-            try {
-                const res = await axios.get("/my-singles");
-                if (res.status === 200) {
-                    setSongs(res.data);
-                    console.log(res.data);
-                }
-            } catch (error: any) {
-                console.log(error);
+    const deleteSong = async (id: number) => {
+        // return console.log(id);
+        setLoading(true);
+        try {
+            const res = await axios.delete(`/delete-song/${id}`);
+            if (res.status === 200) {
+                fetchMySongs();
+                // todo: add success message
             }
-            setLoading(false);
-        };
+        } catch (error: any) {
+            // todo: add error message
+        }
+        setLoading(false);
+    };
+
+    const fetchMySongs = async () => {
+        setLoading(true);
+        try {
+            const res = await axios.get("/my-singles");
+            if (res.status === 200) {
+                setSongs(res.data);
+                console.log(res.data);
+            }
+        } catch (error: any) {
+            console.log(error);
+        }
+        setLoading(false);
+    };
+    useEffect(() => {
         fetchMySongs();
     }, []);
     return (
@@ -35,9 +51,14 @@ function MySingles() {
             <h2 className="font-semibold text-xl leading-7 mt-5 mb-3">
                 My Singles
             </h2>
-            {loading && <LoadingSpinner />}
+            <div className="w-full flex justify-center">
+                {loading && <LoadingSpinner />}
+            </div>
             {songs?.map((song) => (
-                <div className="flex w-full justify-between items-center bg-zinc-900/50 border border-gray-600 px-4 py-2 rounded-lg mb-2 hover:bg-zinc-800/75">
+                <div
+                    key={song.id}
+                    className="flex w-full justify-between items-center bg-zinc-900/50 border border-gray-600 px-4 py-2 rounded-lg mb-2 hover:bg-zinc-800/75"
+                >
                     <div className="flex w-3/5 items-center">
                         <img
                             src={
@@ -63,15 +84,19 @@ function MySingles() {
                     <button
                         type="button"
                         className="focus:ring-4 font-medium rounded-lg text-sm p-1 bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-red-800"
+                        onClick={() => deleteSong(song.id)}
                     >
                         <TrashIcon className="h-6" />
                     </button>
                 </div>
             ))}
-            <div className="flex w-full h-12 items-center bg-zinc-900/50 border border-gray-600 px-4 py-2 rounded-lg mb-2 hover:bg-zinc-800/75 cursor-pointer">
+            <Link
+                to="/dashboard/mymusic/upload-music"
+                className="flex w-full h-12 items-center bg-zinc-900/50 border border-gray-600 px-4 py-2 rounded-lg mb-2 hover:bg-zinc-800/75 cursor-pointer"
+            >
                 <PlusCircleIcon className="h-6 mr-2" />
                 <span className="font-semibold">Upload a new single</span>
-            </div>
+            </Link>
         </div>
     );
 }

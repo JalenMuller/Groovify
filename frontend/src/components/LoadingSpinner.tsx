@@ -1,8 +1,8 @@
 import React from "react";
 
-function LoadingSpinner() {
+function LoadingSpinner(props: { className?: string }) {
     return (
-        <div className="z-50  flex items-center justify-center w-full h-full inset-0">
+        <div className={`z-50 ${props?.className}`}>
             <div role="status">
                 <svg
                     aria-hidden="true"

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import MySingles from "./MySingles";
+import MyAlbums from "./MyAlbums";
 
 function MyLibrary() {
     const [currentTab, setCurrentTab] = useState("singles");
@@ -8,7 +9,7 @@ function MyLibrary() {
             case "singles":
                 return <MySingles />;
             case "albums":
-                return "albums";
+                return <MyAlbums />;
             default:
                 return <MySingles />;
         }

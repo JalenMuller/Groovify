@@ -53,4 +53,17 @@ class MusicController extends Controller
         }
         return response()->json($result);
     }
+    public function destroy_song(Request $request)
+    {
+        $song_id = $request['id'];
+        $user_id = $request->user()['id'];
+
+        $song = Song::where('id', $song_id)->first();
+
+        if ($song['user_id'] == $user_id) {
+            $song->delete();
+        } else {
+            return response()->json("Not your song!");
+        }
+    }
 }

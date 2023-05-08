@@ -1,13 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import UploadMusic from "./UploadMusic/UploadMusic";
-import { useLocation, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import MyLibrary from "./MyLibrary/MyLibrary";
 
 function MyMusic() {
     const [currentTab, setCurrentTab] = useState("upload-music");
     const params = useParams();
-    const location = useLocation();
-    console.log(location);
+
+    useEffect(() => {
+        setCurrentTab(params.tab ?? "upload-music");
+    }, [params.tab]);
     const returnTab = () => {
         switch (currentTab) {
             case "upload-music":
@@ -32,35 +34,50 @@ function MyMusic() {
                     </h2>
                     <ul className="space-y-2 px-2 text-xs md:text-sm">
                         <li
-                            className={`inline-flex w-full py-2 bg-gray-600/25 group rounded-md cursor-pointer ${
+                            className={`inline-flex w-full bg-gray-600/25 group rounded-md cursor-pointer ${
                                 currentTab == "upload-music"
                                     ? "text-blue-500"
                                     : "text-white"
                             }`}
                             onClick={() => setCurrentTab("upload-music")}
                         >
-                            <span className="m-auto">Upload Music</span>
+                            <Link
+                                to="/dashboard/mymusic/upload-music"
+                                className="w-full h-full py-2 text-center"
+                            >
+                                Upload Music
+                            </Link>
                         </li>
                         <li
-                            className={`inline-flex w-full py-2 px-4 bg-gray-600/25 group rounded-md cursor-pointer ${
+                            className={`inline-flex w-full bg-gray-600/25 group rounded-md cursor-pointer ${
                                 currentTab == "my-library"
                                     ? "text-blue-500"
                                     : "text-white"
                             }`}
                             onClick={() => setCurrentTab("my-library")}
                         >
-                            <span className="m-auto">My Library</span>
+                            <Link
+                                to="/dashboard/mymusic/my-library"
+                                className="w-full py-2 text-center"
+                            >
+                                My Library
+                            </Link>
                         </li>
 
                         <li
-                            className={`inline-flex w-full py-2 px-4 text-white bg-gray-600/25 group rounded-md cursor-pointer ${
+                            className={`inline-flex w-full text-white bg-gray-600/25 group rounded-md cursor-pointer ${
                                 currentTab == "artist-profile"
                                     ? "text-blue-500"
                                     : "text-white"
                             }`}
                             onClick={() => setCurrentTab("artist-profile")}
                         >
-                            <span className="m-auto">Artist Profile</span>
+                            <Link
+                                to="/dashboard/mymusic/artist-profile"
+                                className="w-full h-full py-2 text-center"
+                            >
+                                Artist Profile
+                            </Link>
                         </li>
                     </ul>
                 </div>

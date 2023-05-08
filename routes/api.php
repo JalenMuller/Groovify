@@ -24,8 +24,9 @@ Route::middleware('auth:sanctum')->group(function () {
     // auth
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/user', [AuthController::class, 'user']);
-    // uploads
+    // user music
     Route::post('/upload-song', [UploadController::class, 'uploadSong']);
+    Route::delete('/delete-song/{id}', [MusicController::class, 'destroy_song']);
     Route::post('/upload-album-song', [UploadController::class, 'upload_album_song']);
     Route::post('/create-album', [UploadController::class, 'createAlbum']);
     // fetch music

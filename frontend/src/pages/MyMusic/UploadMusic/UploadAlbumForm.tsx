@@ -114,7 +114,7 @@ function UploadAlbumForm() {
         <>
             {loading ? (
                 <div className="w-full h-full">
-                    <LoadingSpinner />
+                    <LoadingSpinner className="flex items-center justify-center w-full h-full" />
                 </div>
             ) : (
                 <div className="overflow-y-auto h-4/5 w-full md:w-3/4 mx-auto px-5 md:px-10">
