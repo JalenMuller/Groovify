@@ -10,7 +10,7 @@ import GenrePicker from "../../../components/GenrePicker";
 import { Album } from "../../../interfaces/AlbumInterface";
 import { CalendarIcon, PencilIcon } from "@heroicons/react/24/solid";
 import LoadingSpinner from "../../../components/LoadingSpinner";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 interface FormFields {
     title: null | string;
@@ -24,7 +24,6 @@ function UploadAlbumForm() {
     const { csrfToken } = useAuth();
     const [requestLoading, setRequestLoading] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [myAlbums, setMyAlbums] = useState<Album[]>([]);
     const [statusMessage, setStatusMessage] = useState<any>(false);
     const [fieldErrors, setFieldErrors] = useState<FormFields>({
         title: null,
@@ -33,21 +32,8 @@ function UploadAlbumForm() {
         release_date: null,
         genre: null,
     });
-    const fetchMyAlbums = async () => {
-        setLoading(true);
-        try {
-            const res = await axios.get("/my-albums");
-            if (res.status === 200) {
-                setMyAlbums(res.data);
-            }
-        } catch (error: any) {
-            console.log(error);
-        }
-        setLoading(false);
-    };
-    useEffect(() => {
-        fetchMyAlbums();
-    }, []);
+    const navigate = useNavigate();
+
     const createAlbum = async (e: any) => {
         e.preventDefault();
         setRequestLoading(true);
@@ -84,7 +70,7 @@ function UploadAlbumForm() {
             headers: { "Content-Type": "multipart/form-data" },
         })
             .then((res) => {
-                fetchMyAlbums();
+                navigate("/dashboard/mymusic/my-library/albums");
             })
             .catch((err) => {
                 const errors = getFieldErrors(err.response.data.errors);
@@ -117,52 +103,7 @@ function UploadAlbumForm() {
                     <LoadingSpinner className="flex items-center justify-center w-full h-full" />
                 </div>
             ) : (
-                <div className="overflow-y-auto h-4/5 w-full md:w-3/4 mx-auto px-5 md:px-10">
-                    {myAlbums.length > 0 && (
-                        <h2 className="font-semibold text-xl leading-7 mt-5 mb-3">
-                            My albums
-                        </h2>
-                    )}
-                    <div className="mb-4">
-                        {myAlbums?.map((album) => (
-                            <Link
-                                to={`edit-album/${album.id}`}
-                                state={{ album }}
-                                key={album.id}
-                            >
-                                <div className="flex w-full justify-between items-center bg-zinc-900/50 border border-gray-600 px-4 py-2 rounded-lg mb-2">
-                                    <div className="flex w-3/5 items-center">
-                                        <img
-                                            src={
-                                                "http://localhost:8000/storage/images/covers/" +
-                                                album.cover
-                                            }
-                                            className="h-10 w-10 rounded-sm"
-                                        />
-                                        <div className="flex w-full flex-col ml-3">
-                                            <span className="text-white font-semibold truncate">
-                                                {album.title}
-                                            </span>
-                                            <span className="text-gray-400 text-sm truncate">
-                                                {album.artist}
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <span className="hidden md:flex items-center text-sm">
-                                        <CalendarIcon className="h-4 mr-2" />
-
-                                        {timeToPrettyDate(album.release_date)}
-                                    </span>
-                                    <button
-                                        type="button"
-                                        className="focus:ring-4 font-medium rounded-lg text-sm p-1 bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-blue-800"
-                                    >
-                                        <PencilIcon className="h-6" />
-                                    </button>
-                                </div>
-                            </Link>
-                        ))}
-                    </div>
+                <div className="overflow-y-auto h-4/5 w-full md:w-3/4 mx-auto px-5 md:px-10 py-2">
                     <form
                         className="space-y-4 mt-2"
                         action="#"

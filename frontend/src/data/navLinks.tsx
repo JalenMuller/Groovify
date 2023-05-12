@@ -6,7 +6,7 @@ import {
 } from "@heroicons/react/24/solid";
 
 export const navLinks = [
-    [{ name: "Home", path: "/home" }, <HomeIcon className="h-6" />],
+    // [{ name: "Home", path: "/home" }, <HomeIcon className="h-6" />],
     [{ name: "Discover", path: "/discover" }, <GlobeAltIcon className="h-6" />],
     [
         { name: "Search", path: "/search" },

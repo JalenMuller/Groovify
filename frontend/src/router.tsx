@@ -10,6 +10,8 @@ import Discover from "./pages/Discover/Discover";
 import EditAlbum from "./pages/MyMusic/UploadMusic/EditAlbum";
 import ViewAlbum from "./components/Music/ViewAlbum";
 import Search from "./pages/Search";
+import Library from "./pages/Library/Library";
+import ViewPlaylist from "./pages/Library/ViewPlaylist";
 
 const router = createBrowserRouter([
     {
@@ -35,10 +37,6 @@ const router = createBrowserRouter([
                 element: <About />,
             },
             {
-                path: "profile",
-                element: <Profile />,
-            },
-            {
                 path: "discover",
                 element: <Discover />,
             },
@@ -47,8 +45,20 @@ const router = createBrowserRouter([
                 element: <Search />,
             },
             {
-                path: "dashboard/mymusic/:tab?",
+                path: "library",
+                element: <Library />,
+            },
+            {
+                path: "playlist/:id",
+                element: <ViewPlaylist />,
+            },
+            {
+                path: "dashboard/mymusic/:tab?/:subTab?",
                 element: <MyMusic />,
+            },
+            {
+                path: "dashboard/profile",
+                element: <Profile />,
             },
             {
                 path: "album/:id",

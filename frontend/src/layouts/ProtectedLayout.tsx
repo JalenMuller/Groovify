@@ -22,9 +22,10 @@ export default function DefaultLayout() {
     const setQueueState = (queue: any) => {
         setQueue(queue);
     };
-    // check if user is logged in or not from server
+
     useEffect(() => {
         initFlowbite();
+        // check if user is logged in or not from server
         (async () => {
             try {
                 const resp = await axios.get("/user");
@@ -70,11 +71,7 @@ export default function DefaultLayout() {
                 <div className="absolute flex h-screen w-screen bg-zinc-900 overflow-hidden">
                     <Navigation />
                     <main className="relative flex flex-col h-full w-full pb-16 md:pb-0 flex-col text-white">
-                        <TopBar name={user.name} logout={handleLogout} />
-                        {/* <div
-                            className="h-12 bg-transparent"
-                            id="topbar-spacer"
-                        /> */}
+                        <TopBar user={user} logout={handleLogout} />
                         <Outlet />
                         {Object.keys(song).length > 0 && <MusicPlayer />}
                     </main>

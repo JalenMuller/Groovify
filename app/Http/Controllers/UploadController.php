@@ -11,7 +11,7 @@ use App\Models\Song;
 
 class UploadController extends Controller
 {
-    public function uploadSong(SongUploadRequest $request)
+    public function upload_song(SongUploadRequest $request)
     {
         // return response()->json($request->user()['id']);
         $data = $request->validated();
@@ -72,15 +72,15 @@ class UploadController extends Controller
             'features' => $features,
             'length' => $data['length'],
             'release_date' => $album['release_date'],
-            'genre_id' => $data['genre'],
+            'genre_id' => $album['genre_id'],
             'album_id' => $album['id'],
-            'album_order' => $album['song_amount'] + 1,
+            'album_order' => ++$album['song_amount'],
             'song_path' => $song_file_name,
             'cover_path' => $album['cover'],
             'user_id' => $request->user()['id']
         ]);
 
-        $album->song_amount = $album['song_amount'] + 1;
+        $album->song_amount = ++$album['song_amount'];
         $album->save();
         return response()->json([
             'message' => "Successfully published song!",

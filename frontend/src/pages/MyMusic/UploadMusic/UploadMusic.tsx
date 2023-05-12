@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import UploadSingleForm from "./UploadSingleForm";
 import UploadAlbumForm from "./UploadAlbumForm";
+import { Link } from "react-router-dom";
 
-function UploadMusic() {
+function UploadMusic(props: { subTab: string }) {
     const [currentTab, setCurrentTab] = useState("single");
     const returnTab = () => {
         switch (currentTab) {
@@ -14,6 +15,11 @@ function UploadMusic() {
                 return <UploadSingleForm />;
         }
     };
+    useEffect(() => {
+        if (props.subTab) {
+            setCurrentTab(props.subTab);
+        }
+    }, []);
     const style =
         "border-transparent hover:border-gray-300 hover:text-gray-300";
     const activeStyle = "active text-blue-600 border-blue-600";
@@ -25,25 +31,27 @@ function UploadMusic() {
                         className="mr-2 cursor-pointer"
                         onClick={() => setCurrentTab("single")}
                     >
-                        <span
-                            className={`inline-block p-4 border-b-2 rounded-t-lg ${
+                        <Link
+                            to="/dashboard/mymusic/upload-music/single"
+                            className={`inline-block w-full h-full p-4 border-b-2 rounded-t-lg ${
                                 currentTab == "single" ? activeStyle : style
                             }`}
                         >
                             Single
-                        </span>
+                        </Link>
                     </li>
                     <li
                         className="mr-2 cursor-pointer"
                         onClick={() => setCurrentTab("album")}
                     >
-                        <span
+                        <Link
+                            to="/dashboard/mymusic/upload-music/album"
                             className={`inline-block p-4 border-b-2 rounded-t-lg ${
                                 currentTab == "album" ? activeStyle : style
                             }`}
                         >
                             Album
-                        </span>
+                        </Link>
                     </li>
                 </ul>
             </div>

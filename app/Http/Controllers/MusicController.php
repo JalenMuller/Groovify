@@ -62,8 +62,58 @@ class MusicController extends Controller
 
         if ($song['user_id'] == $user_id) {
             $song->delete();
+            return response()->json("Deleted " . $song['name']);
         } else {
             return response()->json("Not your song!");
+        }
+    }
+    public function destroy_album_song(Request $request)
+    {
+        $song_id = $request['id'];
+        $user_id = $request->user()['id'];
+
+        $song = Song::where('id', $song_id)->first();
+
+
+        $album = Album::where('id', $song['album_id'])->first();
+        $song_index = $song['album_order'];
+
+        if ($song['user_id'] == $user_id) {
+            // find songs after the deleted songs index and lower their number by 1
+            $songs_after_index = Song::where([['album_id', $album['id']], ['album_order', '>', $song_index]])->get();
+            foreach ($songs_after_index as $album_song) {
+                $album_song['album_order'] = --$album_song['album_order'];
+                $album_song->save();
+            }
+            // lower the album song total by 1 and delete the song
+            $album['song_amount'] = --$album['song_amount'];
+            $album->save();
+            $song->delete();
+            return response()->json([
+                'message' => "Deleted " . $song['name'],
+            ]);
+        } else {
+            return response()->json([
+                'message' => "Not your song!",
+            ]);
+        }
+    }
+    public function destroy_album(Request $request)
+    {
+        $album_id = $request['id'];
+        $user_id = $request->user()['id'];
+
+        $album = Album::where('id', $album_id)->first();
+
+        if ($album['user_id'] == $user_id) {
+            $album->delete();
+            return response()->json([
+                'message' => "Deleted " . $album['title'],
+            ]);
+        } else {
+            return response()->json([
+                'message' => "Not your album!",
+            ]);
         }
     }
 }

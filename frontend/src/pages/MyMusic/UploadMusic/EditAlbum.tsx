@@ -1,14 +1,12 @@
 import {
     ArrowLeftIcon,
     CalendarIcon,
-    PencilIcon,
     TrashIcon,
 } from "@heroicons/react/24/solid";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import { ReactNode, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Song } from "../../../interfaces/SongInterface";
-import { useLocation, redirect } from "react-router-dom";
 import { Album } from "../../../interfaces/AlbumInterface";
 import {
     getDuration,
@@ -16,7 +14,6 @@ import {
     timeToPrettyDate,
 } from "../../../functions/generalFunctions";
 import LoadingDots from "../../../components/LoadingDots";
-import GenrePicker from "../../../components/GenrePicker";
 import { useAuth } from "../../../contexts/AuthContext";
 import axios from "../../../axios";
 import LoadingSpinner from "../../../components/LoadingSpinner";
@@ -24,7 +21,6 @@ import LoadingSpinner from "../../../components/LoadingSpinner";
 interface FormFields {
     name: null | string;
     song: null | string;
-    genre: null | string;
 }
 function EditAlbum() {
     const { csrfToken } = useAuth();
@@ -34,18 +30,18 @@ function EditAlbum() {
     const [fieldErrors, setFieldErrors] = useState<FormFields>({
         name: null,
         song: null,
-        genre: null,
     });
     const [songs, setSongs] = useState<Song[]>([]);
+    const [album, setAlbum] = useState<Album>({});
     const [statusMessage, setStatusMessage] = useState<any>(null);
-    const location = useLocation();
-    const album: Album = location.state.album;
+    const { id } = useParams();
 
     const fetchAlbum = async () => {
         setLoading(true);
         try {
-            const res = await axios.get(`/album/${album.id}`);
+            const res = await axios.get(`/album/${id}`);
             if (res.status === 200) {
+                setAlbum(res.data.album);
                 setSongs(res.data.songs);
             }
         } catch (error: any) {
@@ -61,7 +57,7 @@ function EditAlbum() {
         e.preventDefault();
         setRequestLoading(true);
 
-        const { name, song, genre } = e.target.elements;
+        const { name, song } = e.target.elements;
         let features: string[] = [];
         let featureInputElements = document.querySelectorAll("#feature");
         featureInputElements.forEach((input) => {
@@ -79,7 +75,6 @@ function EditAlbum() {
         const bodyFormData = new FormData();
         bodyFormData.append("name", name.value);
         bodyFormData.append("song", song.files[0]);
-        bodyFormData.append("genre", genre.value);
         bodyFormData.append("length", songLength);
         bodyFormData.append("album_id", album.id.toString());
         if (features.length > 0) {
@@ -99,6 +94,7 @@ function EditAlbum() {
                     type: "success",
                     message: res.data?.message,
                 });
+                fetchAlbum();
                 console.log(res);
             })
             .catch((err) => {
@@ -124,6 +120,20 @@ function EditAlbum() {
 
         setRequestLoading(false);
     };
+    const deleteAlbumSong = async (id: number) => {
+        setLoading(true);
+        try {
+            const res = await axios.delete(`/delete-album-song/${id}`);
+            if (res.status === 200) {
+                console.log(res.data);
+                fetchAlbum();
+                // todo: add success message
+            }
+        } catch (error: any) {
+            // todo: add error message
+        }
+        setLoading(false);
+    };
 
     const addFeatureInput = () => {
         setFeatureInputs(
@@ -142,162 +152,175 @@ function EditAlbum() {
     };
     return (
         <div className="w-full h-full flex-col p-4 md:px-5 overflow-y-auto">
-            {loading && <LoadingSpinner />}
-            <Link to="/dashboard/mymusic" className="absolute z-40">
-                <span className="flex items-center text-underline">
-                    <ArrowLeftIcon className="h-5 mr-2" />
-                    My Albums
-                </span>
-            </Link>
-            <div className="w-full md:w-3/4 mx-auto px-5 mt-10">
-                <div className="flex flex-row justify-between md:items-center">
-                    <div className="flex">
-                        <img
-                            src={
-                                "http://localhost:8000/storage/images/covers/" +
-                                album.cover
-                            }
-                            className="h-16 w-16 rounded-sm"
-                        />
-                        <div className="flex flex-col ml-3">
-                            <h1 className="text-2xl font-bold">
-                                {album.title}
-                            </h1>
-                            <p className="text-xl font-semibold text-gray-400">
-                                {album.artist}
-                            </p>
-                        </div>
-                    </div>
-                    <div className="hidden md:flex flex-col mt-3 md:mt-0">
-                        <span className="text-gray-400 font-semibold">
-                            Release date
-                        </span>
-                        <span className="flex items-center text-lg font-semibold">
-                            <CalendarIcon className="h-4 mr-2" />
-                            {timeToPrettyDate(album.release_date)}
-                        </span>
-                    </div>
+            {loading ? (
+                <div className="w-full h-full">
+                    <LoadingSpinner className="flex items-center justify-center w-full h-full" />
                 </div>
-                <div className="mt-5 mb-3">
-                    {songs?.map((song) => {
-                        let features;
-                        if (song.features)
-                            features = JSON.parse(song.features).join(", ");
+            ) : (
+                <>
+                    <Link
+                        to="/dashboard/mymusic/my-library/albums"
+                        className="absolute z-40"
+                    >
+                        <span className="flex items-center text-underline">
+                            <ArrowLeftIcon className="h-5 mr-2" />
+                            My Albums
+                        </span>
+                    </Link>
+                    <div className="w-full md:w-3/4 mx-auto px-5 mt-10">
+                        <div className="flex flex-row justify-between md:items-center">
+                            <div className="flex">
+                                <img
+                                    src={
+                                        "http://localhost:8000/storage/images/covers/" +
+                                        album.cover
+                                    }
+                                    className="h-16 w-16 rounded-sm"
+                                />
+                                <div className="flex flex-col ml-3">
+                                    <h1 className="text-2xl font-bold">
+                                        {album.title}
+                                    </h1>
+                                    <p className="text-xl font-semibold text-gray-400">
+                                        {album.artist}
+                                    </p>
+                                </div>
+                            </div>
+                            <div className="hidden md:flex flex-col mt-3 md:mt-0">
+                                <span className="text-gray-400 font-semibold">
+                                    Release date
+                                </span>
+                                <span className="flex items-center text-lg font-semibold">
+                                    <CalendarIcon className="h-4 mr-2" />
+                                    {timeToPrettyDate(album.release_date)}
+                                </span>
+                            </div>
+                        </div>
+                        <div className="mt-5 mb-3">
+                            {songs?.map((song) => {
+                                let features;
+                                if (song.features)
+                                    features = JSON.parse(song.features).join(
+                                        ", "
+                                    );
 
-                        return (
-                            <div className="flex w-full justify-between items-center bg-zinc-800 rounded-md px-4 py-2 mb-2">
-                                <div className="flex w-3/5 items-center">
-                                    <span className="text-xl font-semibold text-gray-300 mr-3">
-                                        #{song.album_order}
+                                return (
+                                    <div className="flex w-full justify-between items-center bg-zinc-800 rounded-md px-4 py-2 mb-2">
+                                        <div className="flex w-3/5 items-center">
+                                            <span className="text-xl font-semibold text-gray-300 mr-3">
+                                                #{song.album_order}
+                                            </span>
+                                            <img
+                                                src={
+                                                    "http://localhost:8000/storage/images/covers/" +
+                                                    album.cover
+                                                }
+                                                className="h-10 w-10 rounded-sm"
+                                            />
+                                            <div className="flex w-full flex-col ml-3">
+                                                <span className="text-white font-semibold truncate">
+                                                    {song.name}
+                                                </span>
+                                                <span className="text-gray-400 text-sm truncate">
+                                                    {album.artist}
+                                                    {features &&
+                                                        `, ${features}`}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                deleteAlbumSong(song.id)
+                                            }
+                                            className="focus:ring-4 font-medium rounded-lg text-sm p-1.5 bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-red-800"
+                                        >
+                                            <TrashIcon className="h-6" />
+                                        </button>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                        <form
+                            className="space-y-4 mt-5"
+                            action="#"
+                            method="post"
+                            onSubmit={HandleSubmit}
+                        >
+                            <h1 className="text-2xl font-semibold leading-4">
+                                Add a new song
+                            </h1>
+                            <div>
+                                <label
+                                    htmlFor="name"
+                                    className="block mb-2 text-sm font-medium text-gray-200"
+                                >
+                                    Song name
+                                </label>
+                                <input
+                                    type="text"
+                                    name="name"
+                                    id="name"
+                                    className="bg-gray-50 border border-gray-300 text-white sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    // required
+                                />
+                                {fieldErrors.name && (
+                                    <span className="text-sm text-red-500">
+                                        {fieldErrors.name}
                                     </span>
-                                    <img
-                                        src={
-                                            "http://localhost:8000/storage/images/covers/" +
-                                            album.cover
-                                        }
-                                        className="h-10 w-10 rounded-sm"
+                                )}
+                            </div>
+
+                            <div>
+                                <label
+                                    htmlFor="feature"
+                                    className="block mb-2 text-sm font-medium text-gray-200"
+                                >
+                                    Features
+                                </label>
+                                <div className="flex items-center h-10 mb-2">
+                                    <input
+                                        type="text"
+                                        name="feature"
+                                        id="feature"
+                                        className="block h-full w-full text-sm border rounded-lg text-white focus:outline-none bg-gray-700 border-gray-600 placeholder-gray-400"
+                                        // required
                                     />
-                                    <div className="flex w-full flex-col ml-3">
-                                        <span className="text-white font-semibold truncate">
-                                            {song.name}
-                                        </span>
-                                        <span className="text-gray-400 text-sm truncate">
-                                            {album.artist}
-                                            {features && `, ${features}`}
-                                        </span>
+                                    <div
+                                        onClick={() => addFeatureInput()}
+                                        className="flex items-center px-1 h-full ml-2 border border-gray-300 text-white rounded-lg focus:ring-primary-600 focus:border-primary-600 bg-gray-700 border-gray-600 cursor-pointer "
+                                    >
+                                        <PlusCircleIcon className="h-8" />
                                     </div>
                                 </div>
-                                <button
-                                    type="button"
-                                    className="focus:ring-4 font-medium rounded-lg text-sm p-1.5 bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-red-800"
+                                {featureInputs}
+                            </div>
+                            <div>
+                                <label
+                                    htmlFor="song"
+                                    className="block mb-2 text-sm font-medium text-gray-200"
                                 >
-                                    <TrashIcon className="h-6" />
-                                </button>
+                                    Upload song
+                                </label>
+                                <input
+                                    type="file"
+                                    name="song"
+                                    id="song"
+                                    className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                                    accept=".mp3"
+                                    // required
+                                />
                             </div>
-                        );
-                    })}
-                </div>
-                <form
-                    className="space-y-4 mt-5"
-                    action="#"
-                    method="post"
-                    onSubmit={HandleSubmit}
-                >
-                    <h1 className="text-2xl font-semibold leading-4">
-                        Add a new song
-                    </h1>
-                    <div>
-                        <label
-                            htmlFor="name"
-                            className="block mb-2 text-sm font-medium text-gray-200"
-                        >
-                            Song name
-                        </label>
-                        <input
-                            type="text"
-                            name="name"
-                            id="name"
-                            className="bg-gray-50 border border-gray-300 text-white sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            // required
-                        />
-                        {fieldErrors.name && (
-                            <span className="text-sm text-red-500">
-                                {fieldErrors.name}
-                            </span>
-                        )}
-                    </div>
-
-                    <div>
-                        <label
-                            htmlFor="feature"
-                            className="block mb-2 text-sm font-medium text-gray-200"
-                        >
-                            Features
-                        </label>
-                        <div className="flex items-center h-10 mb-2">
-                            <input
-                                type="text"
-                                name="feature"
-                                id="feature"
-                                className="block h-full w-full text-sm border rounded-lg text-white focus:outline-none bg-gray-700 border-gray-600 placeholder-gray-400"
-                                // required
-                            />
-                            <div
-                                onClick={() => addFeatureInput()}
-                                className="flex items-center px-1 h-full ml-2 border border-gray-300 text-white rounded-lg focus:ring-primary-600 focus:border-primary-600 bg-gray-700 border-gray-600 cursor-pointer "
+                            <button
+                                type="submit"
+                                className="w-full mb-auto text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
                             >
-                                <PlusCircleIcon className="h-8" />
-                            </div>
-                        </div>
-                        {featureInputs}
+                                {requestLoading ? <LoadingDots /> : "Add Song"}
+                            </button>
+                        </form>
                     </div>
-                    <div>
-                        <GenrePicker />
-                    </div>
-                    <div>
-                        <label
-                            htmlFor="song"
-                            className="block mb-2 text-sm font-medium text-gray-200"
-                        >
-                            Upload song
-                        </label>
-                        <input
-                            type="file"
-                            name="song"
-                            id="song"
-                            className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-                            accept=".mp3"
-                            // required
-                        />
-                    </div>
-                    <button
-                        type="submit"
-                        className="w-full mb-auto text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                    >
-                        {requestLoading ? <LoadingDots /> : "Add Song"}
-                    </button>
-                </form>
-            </div>
+                </>
+            )}
         </div>
     );
 }

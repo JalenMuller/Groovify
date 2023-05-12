@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->unsignedBigInteger('genre_id')->nullable();
             $table->unsignedBigInteger('album_id')->nullable();
             $table->unsignedBigInteger('album_order')->nullable();
-            $table->foreign('album_id')->references('id')->on('albums');
+            $table->foreign('album_id')->references('id')->on('albums')->onDelete('cascade');
         });
     }
 

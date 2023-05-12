@@ -7,6 +7,7 @@ import AlbumGrid from "../../components/Music/AlbumGrid";
 import PageHeader from "../../components/PageHeader";
 
 function Discover() {
+    const [loading, setLoading] = useState(false);
     const [songs, setSongs] = useState<Song[]>([]);
     const [albums, setAlbums] = useState<Album[]>([]);
     const [currentTab, setCurrentTab] = useState("songs");
@@ -41,12 +42,16 @@ function Discover() {
                 console.log(error);
             }
         };
-
+        setLoading(true);
         fetchRecentSongs();
         fetchRecentAlbums();
+        setLoading(false);
     }, []);
     return (
-        <div className="w-full h-full flex-col p-2 md:px-5 overflow-y-auto">
+        <div
+            className="w-full h-full pt-14 flex-col p-2 md:px-5 overflow-y-auto"
+            id="scrollable"
+        >
             <div className="mx-5 mb-3 mt-2">
                 <PageHeader
                     title="Discover"
@@ -78,7 +83,9 @@ function Discover() {
                 </div>
             </div>
 
-            <div className=" overflow-x-auto">{renderTab()}</div>
+            <div className=" overflow-x-hidden overflow-y-hidden">
+                {renderTab()}
+            </div>
         </div>
     );
 }

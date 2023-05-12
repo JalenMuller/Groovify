@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Song } from "../../../interfaces/SongInterface";
 import axios from "../../../axios";
-import {
-    CalendarIcon,
-    MusicalNoteIcon,
-    TrashIcon,
-} from "@heroicons/react/24/solid";
+import { MusicalNoteIcon, TrashIcon } from "@heroicons/react/24/solid";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import { timeToPrettyDate } from "../../../functions/generalFunctions";
 import LoadingSpinner from "../../../components/LoadingSpinner";
@@ -76,11 +72,7 @@ function MySingles() {
                             </span>
                         </div>
                     </div>
-                    <span className="hidden md:flex items-center text-sm">
-                        <CalendarIcon className="h-4 mr-2" />
 
-                        {timeToPrettyDate(song.release_date)}
-                    </span>
                     <button
                         type="button"
                         className="focus:ring-4 font-medium rounded-lg text-sm p-1 bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-red-800"
@@ -91,7 +83,7 @@ function MySingles() {
                 </div>
             ))}
             <Link
-                to="/dashboard/mymusic/upload-music"
+                to="/dashboard/mymusic/upload-music/single"
                 className="flex w-full h-12 items-center bg-zinc-900/50 border border-gray-600 px-4 py-2 rounded-lg mb-2 hover:bg-zinc-800/75 cursor-pointer"
             >
                 <PlusCircleIcon className="h-6 mr-2" />

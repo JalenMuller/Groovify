@@ -57,7 +57,10 @@ function Search() {
     };
 
     return (
-        <div className="w-full h-full p-2 pl-8 md:px-10 overflow-y-auto">
+        <div
+            className="w-full h-full px-8 pt-14 md:px-10 overflow-y-auto"
+            id="scrollable"
+        >
             <form
                 className="mt-5 md:mt-3"
                 onSubmit={(e) => handleSubmit(e)}
@@ -72,13 +75,13 @@ function Search() {
                     <input
                         type="search"
                         id="search"
-                        className="block p-2.5 w-full z-20 text-sm text-gray-100 bg-gray-700 rounded-lg border border-gray-500 focus:ring-gray-300 focus:border-gray-300 placeholder:text-gray-300"
+                        className="block p-2.5 w-full z-20 px-5 text-sm text-gray-100 bg-gray-700 rounded-full border border-gray-500 focus:ring-gray-300 focus:border-gray-300 placeholder:text-gray-300"
                         placeholder="Search for music"
                         required
                     />
                     <button
                         type="submit"
-                        className="absolute top-0 right-0 p-2.5 text-sm font-medium text-white bg-gray-500 rounded-r-lg border border-gray-500 hover:bg-gray-500/50 focus:ring-4 focus:outline-none focus:ring-blue-300"
+                        className="absolute top-0 right-0 p-2.5 text-sm font-medium text-white bg-gray-500 rounded-r-full border border-gray-500 hover:bg-gray-500/50 focus:ring-4 focus:outline-none focus:ring-blue-300"
                     >
                         <svg
                             aria-hidden="true"
@@ -126,11 +129,7 @@ function Search() {
             <div className="mt-3">
                 {searchType === "songs" ? (
                     songs.length > 0 && (
-                        <SongTable
-                            songs={songs}
-                            tableHead={false}
-                            rowStyle="bg-gray-800"
-                        />
+                        <SongTable songs={songs} tableHead={false} />
                     )
                 ) : (
                     <AlbumGrid albums={albums} />

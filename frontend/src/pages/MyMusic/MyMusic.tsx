@@ -13,13 +13,13 @@ function MyMusic() {
     const returnTab = () => {
         switch (currentTab) {
             case "upload-music":
-                return <UploadMusic />;
+                return <UploadMusic subTab={params.subTab ?? ""} />;
             case "my-library":
-                return <MyLibrary />;
+                return <MyLibrary subTab={params.subTab ?? ""} />;
             case "artist-profile":
                 return <div className="w-full h-full">profile</div>;
             default:
-                return <UploadMusic />;
+                return <UploadMusic subTab={params.subTab ?? ""} />;
         }
     };
     return (

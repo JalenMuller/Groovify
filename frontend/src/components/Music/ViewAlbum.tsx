@@ -4,9 +4,8 @@ import axios from "../../axios";
 import LoadingSpinner from "../LoadingSpinner";
 import { Album } from "../../interfaces/AlbumInterface";
 import { Song } from "../../interfaces/SongInterface";
-import PageHeader from "../PageHeader";
-import AlbumHeader from "../AlbumHeader";
 import SongTable from "./SongTable";
+import MusicHeader from "../MusicHeader";
 
 function ViewAlbum() {
     const params = useParams();
@@ -32,11 +31,18 @@ function ViewAlbum() {
     }, []);
 
     return (
-        <div className="w-full h-full flex-col p-2 md:px-5 overflow-y-auto">
+        <div className="w-full h-full flex-col p-2 pt-20 md:px-5 overflow-y-auto">
             {loading && <LoadingSpinner />}
             {album && (
                 <div className="space-y-8">
-                    <AlbumHeader album={album} />
+                    <MusicHeader
+                        type="album"
+                        title={album.title}
+                        cover={album.cover}
+                        artist={album.artist}
+                        date={album.release_date}
+                        songAmount={album.song_amount}
+                    />
                     <SongTable songs={songs} tableHead={true} />
                 </div>
             )}
