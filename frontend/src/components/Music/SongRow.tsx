@@ -6,7 +6,7 @@ import {
 } from "../../functions/generalFunctions";
 import { ChartBarIcon, EllipsisVerticalIcon } from "@heroicons/react/24/solid";
 import { MusicPlayerContext } from "../../contexts/MusicPlayerContext";
-import SongActionDropdown from "./SongActionDropdown";
+import SongActionMenu from "./SongActionMenu";
 
 function SongRow(props: {
     playSong: (song: Song) => void;
@@ -83,14 +83,19 @@ function SongRow(props: {
                 <td className="px-6 py-2 hidden md:table-cell">
                     {secondsToMinutes(song.length)}
                 </td>
+                <td
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        toggleActions();
+                    }}
+                    className="z-20  px-0 py-2 table-cell"
+                >
+                    <EllipsisVerticalIcon className="h-4 m-auto" />
+                </td>
             </tr>
-            <div
-                onClick={toggleActions}
-                className="z-20 absolute right-0 px-0 py-2 table-cell"
-            >
-                {showActions && <SongActionDropdown />}
-                <EllipsisVerticalIcon className="h-4 m-auto" />
-            </div>
+            {showActions && (
+                <SongActionMenu song={song} toggleActions={toggleActions} />
+            )}
         </>
     );
 }

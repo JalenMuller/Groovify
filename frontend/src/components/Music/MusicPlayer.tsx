@@ -37,6 +37,14 @@ function MusicPlayer() {
         }
     };
     const forward = () => {
+        if (context.queue.userQueue.length > 0) {
+            context.setSong(context.queue.userQueue[0]);
+            let newUserQueue = context.queue.userQueue;
+            newUserQueue.splice(0, 1);
+            context.setQueue({ ...context.queue, userQueue: newUserQueue });
+            return;
+        }
+        // if no song in queue restart current song
         if (context.queue.forwardQueue.length === 0) {
             restartSong(true);
             return;
@@ -47,8 +55,9 @@ function MusicPlayer() {
         // prepare a new queue with the forwarded song removed
         const newQueue = context.queue.forwardQueue;
         newQueue.splice(0, 1);
-        //
+        // add the skipped song to the previous queue
         context.setQueue({
+            ...context.queue,
             prevQueue: [...context.queue.prevQueue, currentSong],
             forwardQueue: newQueue,
         });
@@ -72,6 +81,7 @@ function MusicPlayer() {
         const newQueue = context.queue.prevQueue;
         newQueue.splice(newQueue.length - 1, 1);
         context.setQueue({
+            ...context.queue,
             prevQueue: newQueue,
             forwardQueue: [currentSong, ...context.queue.forwardQueue],
         });

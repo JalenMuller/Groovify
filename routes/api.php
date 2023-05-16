@@ -35,6 +35,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/delete-album-song/{id}', [MusicController::class, 'destroy_album_song']);
     // playlists
     Route::post('/playlist/create', [PlaylistController::class, 'create']);
+    Route::post('/playlist/add-song', [PlaylistController::class, 'add_song']);
     Route::get('/playlist/my-playlists', [PlaylistController::class, 'my_playlists']);
     Route::get('/playlist/{id}', [PlaylistController::class, 'index']);
     // albums

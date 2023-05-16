@@ -13,8 +13,9 @@ export default function DefaultLayout() {
     const { user, setUser }: any = useAuth();
     const [song, setSong] = useState<{} | Song>({});
     const [queue, setQueue] = useState<any>({
-        prevQueue: {},
-        forwardQueue: {},
+        prevQueue: [],
+        forwardQueue: [],
+        userQueue: [],
     });
     const setSongState = (newSong: Song) => {
         setSong(newSong);
