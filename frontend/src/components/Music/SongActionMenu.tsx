@@ -13,12 +13,14 @@ import LoadingDots from "../LoadingDots";
 import { createPortal } from "react-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { MusicPlayerContext } from "../../contexts/MusicPlayerContext";
+import { StatusMessageContext } from "../../contexts/StatusMessageContext";
 
 function SongActionMenu(props: { song: Song; toggleActions: () => void }) {
     const [playlists, setPlaylists] = useState<Playlist[]>([]);
     const [loading, setLoading] = useState(false);
     const { csrfToken } = useAuth();
     const context: any = useContext(MusicPlayerContext);
+    const statusContext: any = useContext(StatusMessageContext);
 
     const fetchMyPlaylists: () => Promise<void> = async () => {
         setLoading(true);
@@ -28,7 +30,10 @@ function SongActionMenu(props: { song: Song; toggleActions: () => void }) {
                 setPlaylists(res.data);
             }
         } catch (error: any) {
-            console.log(error);
+            statusContext.updateStatus(
+                "error",
+                "Something went wrong, please try again"
+            );
         }
         setLoading(false);
     };
@@ -42,18 +47,22 @@ function SongActionMenu(props: { song: Song; toggleActions: () => void }) {
         try {
             const res = await axios.post("/playlist/add-song", body);
             if (res.status === 200) {
-                // todo: status message
-                console.log(res);
+                statusContext.updateStatus("success", "Song added to playlist");
             }
         } catch (error: any) {
-            console.log(error);
+            statusContext.updateStatus(
+                "error",
+                "Something went wrong, please try again"
+            );
         }
     };
     const addToQueue = () => {
+        props.toggleActions();
         context.setQueue({
             ...context.queue,
             userQueue: [...context.queue.userQueue, props.song],
         });
+        statusContext.updateStatus("success", "Song added to queue");
     };
     useEffect(() => {
         fetchMyPlaylists();

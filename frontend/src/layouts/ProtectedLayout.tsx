@@ -8,10 +8,18 @@ import { initFlowbite } from "flowbite";
 import MusicPlayer from "../components/Music/MusicPlayer";
 import { MusicPlayerContext } from "../contexts/MusicPlayerContext";
 import { Song } from "../interfaces/SongInterface";
+import { StatusMessageInterface } from "../interfaces/StatusMessageInterface";
+import { StatusMessageContext } from "../contexts/StatusMessageContext";
+import StatusMessage from "../components/StatusMessage";
 
 export default function DefaultLayout() {
     const { user, setUser }: any = useAuth();
     const [song, setSong] = useState<{} | Song>({});
+    const [statusMessage, setStatusMessage] = useState<any>({
+        type: null,
+        message: null,
+        className: null,
+    });
     const [queue, setQueue] = useState<any>({
         prevQueue: [],
         forwardQueue: [],
@@ -23,7 +31,18 @@ export default function DefaultLayout() {
     const setQueueState = (queue: any) => {
         setQueue(queue);
     };
-
+    const updateStatus = (type: string, message: string) => {
+        setStatusMessage({
+            type: type,
+            message: message,
+        });
+        setTimeout(() => {
+            setStatusMessage({
+                type: null,
+                message: null,
+            });
+        }, 5000);
+    };
     useEffect(() => {
         initFlowbite();
         // check if user is logged in or not from server
@@ -61,23 +80,32 @@ export default function DefaultLayout() {
     };
     return (
         <>
-            <MusicPlayerContext.Provider
+            <StatusMessageContext.Provider
                 value={{
-                    song: song,
-                    queue: queue,
-                    setSong: (newSong: Song) => setSongState(newSong),
-                    setQueue: (queue) => setQueueState(queue),
+                    statusMessage: statusMessage,
+                    updateStatus: (type, message) =>
+                        updateStatus(type, message),
                 }}
             >
-                <div className="absolute flex h-screen w-screen bg-zinc-900 overflow-hidden">
-                    <Navigation />
-                    <main className="relative flex flex-col h-full w-full pb-16 md:pb-0 flex-col text-white">
-                        <TopBar user={user} logout={handleLogout} />
-                        <Outlet />
-                        {Object.keys(song).length > 0 && <MusicPlayer />}
-                    </main>
-                </div>
-            </MusicPlayerContext.Provider>
+                <MusicPlayerContext.Provider
+                    value={{
+                        song: song,
+                        queue: queue,
+                        setSong: (newSong: Song) => setSongState(newSong),
+                        setQueue: (queue) => setQueueState(queue),
+                    }}
+                >
+                    <StatusMessage />
+                    <div className="absolute flex h-screen w-screen bg-zinc-900 overflow-hidden">
+                        <Navigation />
+                        <main className="relative flex flex-col h-full w-full pb-16 md:pb-0 flex-col text-white">
+                            <TopBar user={user} logout={handleLogout} />
+                            <Outlet />
+                            {Object.keys(song).length > 0 && <MusicPlayer />}
+                        </main>
+                    </div>
+                </MusicPlayerContext.Provider>
+            </StatusMessageContext.Provider>
         </>
     );
 }

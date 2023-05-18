@@ -9,6 +9,7 @@ function SongTable(props: {
     songs: Song[];
     tableHead: boolean;
     rowStyle?: string;
+    hiddenColumns?: string[];
 }) {
     const context: any = useContext(MusicPlayerContext);
     const songs = props.songs;
@@ -22,53 +23,56 @@ function SongTable(props: {
             forwardQueue: queue,
         });
     };
+    console.log(props.hiddenColumns?.includes("album"));
     return (
         <>
-            <table className="w-full table-fixed text-sm text-left text-gray-400">
+            <table className="w-full text-sm text-left text-gray-400">
                 <colgroup>
-                    <col className="w-[5%] md:w-[5%]" />
-                    <col className="w-[40%] md:w-[50%]" />
-                    <col
-                        className="hidden md:table-column"
-                        style={{ width: "25%" }}
-                    />
-                    <col
-                        className="hidden md:table-column"
-                        style={{ width: "22.5%" }}
-                    />
-                    <col
-                        className="hidden md:table-column"
-                        style={{ width: "10%" }}
-                    />
-                    <col style={{ width: "7.5%" }} />
+                    <col className="w-10" />
+                    <col className="w-auto" />
+                    <col className="w-auto" />
+                    <col className="w-auto" />
+                    <col className="w-auto" />
+                    <col className="w-4 mr-auto" />
                 </colgroup>
                 <thead className="text-xs uppercase text-gray-400 border-b border-zinc-500">
                     {props.tableHead && (
                         <tr>
-                            <th scope="col" className="mx-auto px-6 py-3">
-                                #
-                            </th>
+                            {!props.hiddenColumns?.includes("index") && (
+                                <th
+                                    scope="col"
+                                    className="mx-auto px-2 text-center py-3"
+                                >
+                                    #
+                                </th>
+                            )}
                             <th scope="col" className="px-6 py-3">
                                 Title
                             </th>
-                            <th
-                                scope="col"
-                                className="hidden md:table-cell px-6 py-3"
-                            >
-                                Album
-                            </th>
-                            <th
-                                scope="col"
-                                className="hidden md:table-cell px-6 py-3"
-                            >
-                                Date
-                            </th>
-                            <th
-                                scope="col"
-                                className="hidden md:table-cell px-6 py-3"
-                            >
-                                <ClockIcon className="h-4 mx-auto" />
-                            </th>
+                            {!props.hiddenColumns?.includes("album") && (
+                                <th
+                                    scope="col"
+                                    className="hidden md:table-cell px-6 py-3"
+                                >
+                                    Album
+                                </th>
+                            )}
+                            {!props.hiddenColumns?.includes("date") && (
+                                <th
+                                    scope="col"
+                                    className="hidden md:table-cell px-6 py-3"
+                                >
+                                    Date
+                                </th>
+                            )}
+                            {!props.hiddenColumns?.includes("length") && (
+                                <th
+                                    scope="col"
+                                    className="hidden md:table-cell px-6 py-3"
+                                >
+                                    <ClockIcon className="h-4 ml-auto" />
+                                </th>
+                            )}
                         </tr>
                     )}
                 </thead>
@@ -81,6 +85,7 @@ function SongTable(props: {
                                 song={song}
                                 i={i}
                                 key={song.id}
+                                hiddenColumns={props?.hiddenColumns ?? []}
                             />
                         );
                     })}

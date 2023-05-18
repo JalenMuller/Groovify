@@ -64,7 +64,7 @@ function Navigation() {
                                                 : "text-white"
                                         }`}
                                     >
-                                        {link[1]}
+                                        <div className="h-7">{link[1]}</div>
                                         <span className="ml-3">
                                             {link[0].name}
                                         </span>
@@ -102,34 +102,37 @@ function Navigation() {
             </aside>
             {/* mobile navbar */}
             <div className="flex md:hidden absolute bottom-0 left-0 justify-around items-center w-full h-16 bg-white dark:bg-gray-800 z-20 border-r border-gray-200 dark:border-gray-700">
-                <button
-                    type="button"
-                    className="inline-flex flex-col justify-center items-center p-2 rounded cursor-pointer hover:text-white text-gray-400 text-zinc-300"
-                >
-                    <HomeIcon className="h-8" />
-                    <span className="text-sm font-semibold">Home</span>
-                </button>
-                <button
-                    type="button"
-                    className="inline-flex flex-col justify-center items-center p-2 rounded cursor-pointer hover:text-white text-gray-400 text-zinc-300"
-                >
-                    <GlobeAltIcon className="h-8" />
-                    <span className="text-sm font-semibold">Discover</span>
-                </button>
-                <button
-                    type="button"
-                    className="inline-flex flex-col justify-center items-center p-2 rounded cursor-pointer hover:text-white text-gray-400 text-zinc-300"
-                >
-                    <MagnifyingGlassIcon className="h-8" />
-                    <span className="text-sm font-semibold">Search</span>
-                </button>
-                <button
-                    type="button"
-                    className="inline-flex flex-col justify-center items-center p-2 rounded cursor-pointer hover:text-white text-gray-400 text-zinc-300"
-                >
-                    <MusicalNoteIcon className="h-8" />
-                    <span className="text-sm font-semibold">Library</span>
-                </button>
+                {navLinks.map((link: any) => {
+                    // first index contains name/path object
+                    // second index contains the icon component
+                    let active = false;
+                    if (link[0].path == location.pathname) {
+                        active = true;
+                    }
+                    return (
+                        <Link to={link[0].path} key={link[0].name}>
+                            <button
+                                type="button"
+                                className="inline-flex flex-col justify-center items-center p-2 rounded cursor-pointer hover:text-white text-gray-400 text-zinc-300"
+                            >
+                                <div
+                                    className={`h-8 ${
+                                        active ? "text-blue-500" : "text-white"
+                                    }`}
+                                >
+                                    {link[1]}
+                                </div>
+                                <span
+                                    className={`text-sm font-semibold ${
+                                        active && "text-blue-500"
+                                    }`}
+                                >
+                                    {link[0].name}
+                                </span>
+                            </button>
+                        </Link>
+                    );
+                })}
             </div>
         </>
     );

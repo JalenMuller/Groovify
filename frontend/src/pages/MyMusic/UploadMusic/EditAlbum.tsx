@@ -4,7 +4,7 @@ import {
     TrashIcon,
 } from "@heroicons/react/24/solid";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Song } from "../../../interfaces/SongInterface";
 import { Album } from "../../../interfaces/AlbumInterface";
@@ -17,6 +17,7 @@ import LoadingDots from "../../../components/LoadingDots";
 import { useAuth } from "../../../contexts/AuthContext";
 import axios from "../../../axios";
 import LoadingSpinner from "../../../components/LoadingSpinner";
+import { StatusMessageContext } from "../../../contexts/StatusMessageContext";
 
 interface FormFields {
     name: null | string;
@@ -24,6 +25,7 @@ interface FormFields {
 }
 function EditAlbum() {
     const { csrfToken } = useAuth();
+    const statusContext: any = useContext(StatusMessageContext);
     const [requestLoading, setRequestLoading] = useState(false);
     const [loading, setLoading] = useState(false);
     const [featureInputs, setFeatureInputs] = useState<ReactNode[]>([]);
@@ -32,8 +34,7 @@ function EditAlbum() {
         song: null,
     });
     const [songs, setSongs] = useState<Song[]>([]);
-    const [album, setAlbum] = useState<Album>({});
-    const [statusMessage, setStatusMessage] = useState<any>(null);
+    const [album, setAlbum] = useState<Album | any>({});
     const { id } = useParams();
 
     const fetchAlbum = async () => {
@@ -90,10 +91,7 @@ function EditAlbum() {
             headers: { "Content-Type": "multipart/form-data" },
         })
             .then((res) => {
-                setStatusMessage({
-                    type: "success",
-                    message: res.data?.message,
-                });
+                statusContext.updateStatus("success", res.data?.message);
                 fetchAlbum();
                 console.log(res);
             })
@@ -101,11 +99,10 @@ function EditAlbum() {
                 const errors = getFieldErrors(err.response.data.errors);
                 if (errors.length === 0)
                     // No errors returned? Send basic error message.
-                    setStatusMessage({
-                        type: "error",
-                        message:
-                            "Something went wrong, please try again later.",
-                    });
+                    statusContext.updateStatus(
+                        "error",
+                        "Something went wrong, please try again."
+                    );
                 else {
                     // Field errors found? Loop through and set the field errors state
                     let newState = fieldErrors;
@@ -125,8 +122,8 @@ function EditAlbum() {
         try {
             const res = await axios.delete(`/delete-album-song/${id}`);
             if (res.status === 200) {
-                console.log(res.data);
                 fetchAlbum();
+                statusContext.updateStatus("deletion", res.data?.message);
                 // todo: add success message
             }
         } catch (error: any) {
@@ -205,7 +202,10 @@ function EditAlbum() {
                                     );
 
                                 return (
-                                    <div className="flex w-full justify-between items-center bg-zinc-800 rounded-md px-4 py-2 mb-2">
+                                    <div
+                                        key={song.id}
+                                        className="flex w-full justify-between items-center bg-zinc-800 rounded-md px-4 py-2 mb-2"
+                                    >
                                         <div className="flex w-3/5 items-center">
                                             <span className="text-xl font-semibold text-gray-300 mr-3">
                                                 #{song.album_order}

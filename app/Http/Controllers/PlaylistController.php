@@ -32,15 +32,19 @@ class PlaylistController extends Controller
     }
     public function add_song(PlaylistSongRequest $request)
     {
+        $data = $request->validated();
         $user_id = $request->user()['id'];
-        $playlist = Playlist::where('id', $request['playlist_id'])->first();
+        $playlist = Playlist::where('id', $data['playlist_id'])->first();
         if ($playlist['user_id'] != $user_id) {
-            return response()->json(['message' => "You can only add songs to your own playlist."]);
+            return response('Unauthorized', 403);
         }
-
+        // check for duplicate song in playlist
+        if (PlaylistSong::where('song_id', $data['song_id'])->count() >= 1) {
+            return response()->json(['message' => "You've already added that song"]);
+        }
         $playlist_song = PlaylistSong::create([
-            'song_id' => $request['song_id'],
-            'playlist_id' => $request['playlist_id'],
+            'song_id' => $data['song_id'],
+            'playlist_id' => $data['playlist_id'],
             'user_id' => $user_id
         ]);
         return response()->json($playlist_song);

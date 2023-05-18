@@ -1,7 +1,6 @@
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useContext, useEffect, useState } from "react";
 import axios from "../../../axios";
 import { useAuth } from "../../../contexts/AuthContext";
-import StatusMessage from "../../../components/StatusMessage";
 import {
     getDuration,
     getFieldErrors,
@@ -9,6 +8,7 @@ import {
 import LoadingDots from "../../../components/LoadingDots";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import GenrePicker from "../../../components/GenrePicker";
+import { StatusMessageContext } from "../../../contexts/StatusMessageContext";
 interface FormFields {
     name: null | string;
     artist: null | string;
@@ -19,7 +19,7 @@ interface FormFields {
 }
 function UploadSingleForm() {
     const { csrfToken } = useAuth();
-    const [statusMessage, setStatusMessage] = useState<any>(false);
+    const statusContext: any = useContext(StatusMessageContext);
     const [loading, setLoading] = useState(false);
     const [featureInputs, setFeatureInputs] = useState<ReactNode[]>([]);
     const [fieldErrors, setFieldErrors] = useState<FormFields>({
@@ -31,7 +31,6 @@ function UploadSingleForm() {
         genre: null,
     });
     const addFeatureInput = () => {
-        console.log("added?");
         setFeatureInputs(
             featureInputs.concat(
                 <div className="flex items-center h-10 mb-2">
@@ -89,21 +88,16 @@ function UploadSingleForm() {
             headers: { "Content-Type": "multipart/form-data" },
         })
             .then((res) => {
-                setStatusMessage({
-                    type: "success",
-                    message: res.data?.message,
-                });
-                console.log(res);
+                statusContext.updateStatus("success", res.data?.message);
             })
             .catch((err) => {
                 const errors = getFieldErrors(err.response.data.errors);
                 if (errors.length === 0)
                     // No errors returned? Send basic error message.
-                    setStatusMessage({
-                        type: "error",
-                        message:
-                            "Something went wrong, please try again later.",
-                    });
+                    statusContext.updateStatus(
+                        "error",
+                        "Something went wrong, please try again."
+                    );
                 else {
                     // Field errors found? Loop through and set the field errors state
                     let newState = fieldErrors;
@@ -113,13 +107,11 @@ function UploadSingleForm() {
                     });
                     setFieldErrors({ ...newState });
                 }
-                // console.log(res);
             });
 
         setLoading(false);
     };
 
-    // useEffect(() => {}, [fieldErrors]);
     return (
         <>
             <form
@@ -128,13 +120,6 @@ function UploadSingleForm() {
                 method="post"
                 onSubmit={handleSubmit}
             >
-                {statusMessage && (
-                    <StatusMessage
-                        type={statusMessage.type}
-                        message={statusMessage.message}
-                        className="absolute top-5 left-0 right-0 mx-auto md:mr-48"
-                    />
-                )}
                 <h2 className="font-semibold text-xl leading-7">
                     Publish a new song
                 </h2>

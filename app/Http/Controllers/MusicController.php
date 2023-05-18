@@ -82,15 +82,15 @@ class MusicController extends Controller
             // find songs after the deleted songs index and lower their number by 1
             $songs_after_index = Song::where([['album_id', $album['id']], ['album_order', '>', $song_index]])->get();
             foreach ($songs_after_index as $album_song) {
-                $album_song['album_order'] = --$album_song['album_order'];
+                $album_song['album_order'] = $album_song['album_order'] - 1;
                 $album_song->save();
             }
             // lower the album song total by 1 and delete the song
-            $album['song_amount'] = --$album['song_amount'];
+            $album['song_amount'] = $album['song_amount'] - 1;
             $album->save();
             $song->delete();
             return response()->json([
-                'message' => "Deleted " . $song['name'],
+                'message' => "Deleted song " . $song['name'],
             ]);
         } else {
             return response()->json([

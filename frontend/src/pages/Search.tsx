@@ -1,15 +1,17 @@
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, useContext, useState } from "react";
 import PageHeader from "../components/PageHeader";
 import { Song } from "../interfaces/SongInterface";
 import { Album } from "../interfaces/AlbumInterface";
 import axios from "../axios";
 import SongTable from "../components/Music/SongTable";
 import AlbumGrid from "../components/Music/AlbumGrid";
+import { StatusMessageContext } from "../contexts/StatusMessageContext";
 
 function Search() {
     const [searchType, setSearchType] = useState("songs");
     const [songs, setSongs] = useState<Song[]>([]);
     const [albums, setAlbums] = useState<Album[]>([]);
+    const statusContext: any = useContext(StatusMessageContext);
 
     const handleSubmit = (e: any) => {
         e.preventDefault();
@@ -33,11 +35,13 @@ function Search() {
         try {
             const res = await axios.get("/search", { params: params });
             if (res.status === 200) {
-                console.log(res.data);
                 setSongs(res.data);
             }
         } catch (error: any) {
-            console.log(error);
+            statusContext.updateStatus(
+                "error",
+                "Something went wrong, please try again"
+            );
         }
     };
     const searchAlbums = async (inputValue: string) => {
@@ -52,7 +56,10 @@ function Search() {
                 setAlbums(res.data);
             }
         } catch (error: any) {
-            console.log(error);
+            statusContext.updateStatus(
+                "error",
+                "Something went wrong, please try again"
+            );
         }
     };
 

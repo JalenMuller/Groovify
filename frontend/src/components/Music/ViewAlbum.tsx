@@ -43,7 +43,11 @@ function ViewAlbum() {
                         date={album.release_date}
                         songAmount={album.song_amount}
                     />
-                    <SongTable songs={songs} tableHead={true} />
+                    <SongTable
+                        songs={songs}
+                        tableHead={true}
+                        hiddenColumns={["album", "date"]}
+                    />
                 </div>
             )}
         </div>

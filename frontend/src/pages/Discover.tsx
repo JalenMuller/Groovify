@@ -1,12 +1,14 @@
-import { ReactNode, useEffect, useState } from "react";
-import axios from "../../axios";
-import { Song } from "../../interfaces/SongInterface";
-import SongTable from "../../components/Music/SongTable";
-import { Album } from "../../interfaces/AlbumInterface";
-import AlbumGrid from "../../components/Music/AlbumGrid";
-import PageHeader from "../../components/PageHeader";
+import { ReactNode, useContext, useEffect, useState } from "react";
+import axios from "../axios";
+import { Song } from "../interfaces/SongInterface";
+import SongTable from "../components/Music/SongTable";
+import { Album } from "../interfaces/AlbumInterface";
+import AlbumGrid from "../components/Music/AlbumGrid";
+import PageHeader from "../components/PageHeader";
+import { StatusMessageContext } from "../contexts/StatusMessageContext";
 
 function Discover() {
+    const statusContext: any = useContext(StatusMessageContext);
     const [loading, setLoading] = useState(false);
     const [songs, setSongs] = useState<Song[]>([]);
     const [albums, setAlbums] = useState<Album[]>([]);
@@ -29,7 +31,10 @@ function Discover() {
                     setSongs(res.data);
                 }
             } catch (error: any) {
-                console.log(error);
+                statusContext.updateStatus(
+                    "error",
+                    "Something went wrong, please try again."
+                );
             }
         };
         const fetchRecentAlbums = async () => {
@@ -39,7 +44,10 @@ function Discover() {
                     setAlbums(res.data);
                 }
             } catch (error: any) {
-                console.log(error);
+                statusContext.updateStatus(
+                    "error",
+                    "Something went wrong, please try again."
+                );
             }
         };
         setLoading(true);

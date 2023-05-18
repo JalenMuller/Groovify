@@ -68,7 +68,7 @@ function TopBar(props: { user: any; logout: Function }) {
                 type="button"
             >
                 <div className="hidden md:flex justify-center text-sm max-h-7 items-center border border-white bg-zinc-900 font-semibold rounded-full text-white pl-5">
-                    <span className="mr-2">
+                    <span className="mr-2 max-w-[5rem] overflow-x-hidden truncate">
                         {props.user.name.split(" ")[0]}
                     </span>
                     <div className="border-2 border-white  rounded-full w-10 h-10 rounded-full bg-zinc-900">
@@ -78,12 +78,21 @@ function TopBar(props: { user: any; logout: Function }) {
                                 src={`http://localhost:8000/storage/images/avatars/${props.user.avatar}`}
                             />
                         ) : (
-                            <UserIcon />
+                            <UserIcon className="p-2" />
                         )}
                     </div>
                 </div>
-                <div className="flex items-center justify-center text-lg md:hidden border-2 border-zinc-400 text-zinc-200 rounded-full w-8 h-8 rounded-full bg-zinc-900 m-2 p-2">
-                    <span className="font-bold">{props.user.name[0]}</span>
+                <div className="flex w-10 h-10 items-center justify-center text-lg md:hidden border-2 border-zinc-400 text-zinc-200 rounded-full rounded-full bg-zinc-900 mt-2 mr-2">
+                    {props.user.avatar ? (
+                        <img
+                            className="w-full h-full rounded-full"
+                            src={`http://localhost:8000/storage/images/avatars/${props.user.avatar}`}
+                        />
+                    ) : (
+                        <span className="font-bold">
+                            {props.user.name[0].toUpperCase()}
+                        </span>
+                    )}
                 </div>
             </button>
             <div
@@ -101,14 +110,6 @@ function TopBar(props: { user: any; logout: Function }) {
                         >
                             Profile
                         </Link>
-                    </li>
-                    <li>
-                        <a
-                            href="#"
-                            className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                        >
-                            Settings
-                        </a>
                     </li>
                     <li onClick={clearCurrentSong}>
                         <Link

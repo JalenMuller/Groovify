@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import PageHeader from "../components/PageHeader";
 import { UserIcon } from "@heroicons/react/24/solid";
@@ -7,6 +7,7 @@ import { getFieldErrors } from "../functions/generalFunctions";
 import LoadingDots from "../components/LoadingDots";
 import StatusMessage from "../components/StatusMessage";
 import LoadingSpinner from "../components/LoadingSpinner";
+import { StatusMessageContext } from "../contexts/StatusMessageContext";
 
 interface FormFields {
     name: null | string;
@@ -16,11 +17,11 @@ interface FormFields {
 
 export default function Profile() {
     const { csrfToken }: any = useAuth();
+    const statusContext: any = useContext(StatusMessageContext);
     const [user, setUser] = useState<any>(null);
     const [avatarSrc, setAvatarSrc] = useState<any>("");
     const [requestLoading, setRequestLoading] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [statusMessage, setStatusMessage] = useState<any>(null);
     const [fieldErrors, setFieldErrors] = useState<FormFields>({
         name: null,
         email: null,
@@ -81,20 +82,19 @@ export default function Profile() {
         })
             .then((res) => {
                 fetchUser();
-                setStatusMessage({
-                    type: "success",
-                    message: res.data.message,
-                });
+                statusContext.updateStatus(
+                    "success",
+                    "Your changes have been saved"
+                );
             })
             .catch((err) => {
                 const errors = getFieldErrors(err.response.data.errors);
                 if (errors.length === 0) {
                     // No errors returned? Send basic error message.
-                    setStatusMessage({
-                        type: "error",
-                        message:
-                            "Something went wrong, please try again later.",
-                    });
+                    statusContext.updateStatus(
+                        "success",
+                        "Something went wrong, please try again."
+                    );
                 } else {
                     // Field errors found? Loop through and set the field errors state
                     let newState = fieldErrors;
@@ -110,105 +110,96 @@ export default function Profile() {
         setRequestLoading(false);
     };
     return (
-        <>
-            {statusMessage && (
-                <StatusMessage
-                    type={statusMessage.type}
-                    message={statusMessage.message}
-                    className="absolute top-5 left-0 right-0 mx-auto md:mr-48"
-                />
-            )}
-            <div
-                className="w-full h-full pt-14 flex-col p-2 md:px-5 overflow-y-auto"
-                id="scrollable"
-            >
-                {loading ? (
-                    <div className="w-full h-full">
-                        <LoadingSpinner className="flex items-center justify-center w-full h-full" />
-                    </div>
-                ) : (
-                    <>
-                        <input
-                            className="hidden"
-                            type="file"
-                            id="avatar"
-                            ref={fileInput}
-                            onChange={(e) => previewFile(e)}
-                        />
-                        <div className="w-full md:w-3/4 mx-auto px-2">
-                            <PageHeader title="My Profile" />
-                            <form
-                                className="space-y-4 mt-7"
-                                action="#"
-                                method="post"
-                                onSubmit={updateProfile}
-                            >
-                                <div className="flex justify-around md:justify-start">
-                                    <div
-                                        className="h-20 w-20 flex items-center justify-center rounded-full border mr-2 hover:border-2 transition"
-                                        onClick={openFileInput}
-                                    >
+        <div
+            className="w-full h-full pt-14 flex-col p-2 md:px-5 overflow-y-auto"
+            id="scrollable"
+        >
+            {loading ? (
+                <div className="w-full h-full">
+                    <LoadingSpinner className="flex items-center justify-center w-full h-full" />
+                </div>
+            ) : (
+                <>
+                    <input
+                        className="hidden"
+                        type="file"
+                        id="avatar"
+                        ref={fileInput}
+                        onChange={(e) => previewFile(e)}
+                    />
+                    <div className="w-full md:w-3/4 mx-auto px-2">
+                        <PageHeader title="My Profile" />
+                        <form
+                            className="space-y-4 mt-7"
+                            action="#"
+                            method="post"
+                            onSubmit={updateProfile}
+                        >
+                            <div className="flex justify-around md:justify-start">
+                                <div
+                                    className="h-20 w-20 flex items-center justify-center rounded-full border mr-2 hover:border-2 transition"
+                                    onClick={openFileInput}
+                                >
+                                    <img
+                                        src={avatarSrc}
+                                        className="h-full w-full rounded-full"
+                                    />
+                                    {user?.avatar && !avatarSrc ? (
                                         <img
-                                            src={avatarSrc}
                                             className="h-full w-full rounded-full"
+                                            src={`http://localhost:8000/storage/images/avatars/${user.avatar}`}
                                         />
-                                        {user?.avatar && !avatarSrc ? (
-                                            <img
-                                                className="h-full w-full rounded-full"
-                                                src={`http://localhost:8000/storage/images/avatars/${user.avatar}`}
-                                            />
-                                        ) : (
-                                            !avatarSrc && (
-                                                <UserIcon className="h-10" />
-                                            )
-                                        )}
-                                    </div>
-                                    <div className="md:ml-5">
-                                        <label
-                                            htmlFor="title"
-                                            className="block mb-2 text-sm font-medium text-gray-200"
-                                        >
-                                            Name
-                                        </label>
-                                        <input
-                                            type="text"
-                                            name="name"
-                                            id="name"
-                                            className="sm:text-sm rounded-lg block w-full bg-zinc-900 placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500"
-                                            defaultValue={user?.name}
-                                        />
-                                    </div>
+                                    ) : (
+                                        !avatarSrc && (
+                                            <UserIcon className="h-10" />
+                                        )
+                                    )}
                                 </div>
-                                <div>
+                                <div className="md:ml-5">
                                     <label
                                         htmlFor="title"
                                         className="block mb-2 text-sm font-medium text-gray-200"
                                     >
-                                        Email
+                                        Name
                                     </label>
                                     <input
                                         type="text"
-                                        name="email"
-                                        id="email"
+                                        name="name"
+                                        id="name"
                                         className="sm:text-sm rounded-lg block w-full bg-zinc-900 placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500"
-                                        defaultValue={user?.email}
+                                        defaultValue={user?.name}
                                     />
                                 </div>
-                                <button
-                                    type="submit"
-                                    className="w-full mb-auto text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                            </div>
+                            <div>
+                                <label
+                                    htmlFor="title"
+                                    className="block mb-2 text-sm font-medium text-gray-200"
                                 >
-                                    {requestLoading ? (
-                                        <LoadingDots />
-                                    ) : (
-                                        "Update Profile"
-                                    )}
-                                </button>
-                            </form>
-                        </div>
-                    </>
-                )}
-            </div>
-        </>
+                                    Email
+                                </label>
+                                <input
+                                    type="text"
+                                    name="email"
+                                    id="email"
+                                    className="sm:text-sm rounded-lg block w-full bg-zinc-900 placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500"
+                                    defaultValue={user?.email}
+                                />
+                            </div>
+                            <button
+                                type="submit"
+                                className="w-full mb-auto text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                            >
+                                {requestLoading ? (
+                                    <LoadingDots />
+                                ) : (
+                                    "Update Profile"
+                                )}
+                            </button>
+                        </form>
+                    </div>
+                </>
+            )}
+        </div>
     );
 }

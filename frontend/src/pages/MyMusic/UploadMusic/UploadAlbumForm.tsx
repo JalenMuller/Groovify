@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useAuth } from "../../../contexts/AuthContext";
 import axios from "../../../axios";
 import LoadingDots from "../../../components/LoadingDots";
@@ -11,6 +11,7 @@ import { Album } from "../../../interfaces/AlbumInterface";
 import { CalendarIcon, PencilIcon } from "@heroicons/react/24/solid";
 import LoadingSpinner from "../../../components/LoadingSpinner";
 import { Link, useNavigate } from "react-router-dom";
+import { StatusMessageContext } from "../../../contexts/StatusMessageContext";
 
 interface FormFields {
     title: null | string;
@@ -22,6 +23,7 @@ interface FormFields {
 
 function UploadAlbumForm() {
     const { csrfToken } = useAuth();
+    const statusContext: any = useContext(StatusMessageContext);
     const [requestLoading, setRequestLoading] = useState(false);
     const [loading, setLoading] = useState(false);
     const [statusMessage, setStatusMessage] = useState<any>(false);
@@ -77,11 +79,10 @@ function UploadAlbumForm() {
                 console.log(errors);
                 if (errors.length === 0)
                     // No errors returned? Send basic error message.
-                    setStatusMessage({
-                        type: "error",
-                        message:
-                            "Something went wrong, please try again later.",
-                    });
+                    statusContext.updateStatus(
+                        "error",
+                        "Something went wrong, please try again."
+                    );
                 else {
                     // Field errors found? Loop through and set the field errors state
                     let newState = fieldErrors;

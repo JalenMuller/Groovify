@@ -16,8 +16,6 @@ function MyMusic() {
                 return <UploadMusic subTab={params.subTab ?? ""} />;
             case "my-library":
                 return <MyLibrary subTab={params.subTab ?? ""} />;
-            case "artist-profile":
-                return <div className="w-full h-full">profile</div>;
             default:
                 return <UploadMusic subTab={params.subTab ?? ""} />;
         }
@@ -61,22 +59,6 @@ function MyMusic() {
                                 className="w-full py-2 text-center"
                             >
                                 My Library
-                            </Link>
-                        </li>
-
-                        <li
-                            className={`inline-flex w-full text-white bg-gray-600/25 group rounded-md cursor-pointer ${
-                                currentTab == "artist-profile"
-                                    ? "text-blue-500"
-                                    : "text-white"
-                            }`}
-                            onClick={() => setCurrentTab("artist-profile")}
-                        >
-                            <Link
-                                to="/dashboard/mymusic/artist-profile"
-                                className="w-full h-full py-2 text-center"
-                            >
-                                Artist Profile
                             </Link>
                         </li>
                     </ul>

@@ -48,7 +48,7 @@ function MyAlbums() {
         fetchMyAlbums();
     }, []);
     return (
-        <div className="overflow-y-auto h-4/5 w-full md:w-3/4 px-5 md:px-10 mx-auto space-y-4 mt-5">
+        <div className="overflow-y-auto h-4/5 w-full md:w-4/5 px-5 md:px-10 mx-auto space-y-4 mt-5">
             <h2 className="font-semibold text-xl leading-7 mt-5 mb-3">
                 My Albums
             </h2>
@@ -60,15 +60,15 @@ function MyAlbums() {
                     key={album.id}
                     className="flex w-full justify-between items-center bg-zinc-900/50 border border-gray-600 px-4 py-2 rounded-lg mb-2 hover:bg-zinc-800/75"
                 >
-                    <div className="flex w-3/5 items-center">
+                    <div className="flex w-full overflow-x-hidden items-center">
                         <img
                             src={
                                 "http://localhost:8000/storage/images/covers/" +
                                 album.cover
                             }
-                            className="h-10 w-10 rounded-sm"
+                            className="h-10 w-10 rounded-sm hidden md:block"
                         />
-                        <div className="flex w-full flex-col ml-3">
+                        <div className="flex flex-col md:ml-3 truncate">
                             <span className="text-white font-semibold truncate">
                                 {album.title}
                             </span>
@@ -77,11 +77,11 @@ function MyAlbums() {
                             </span>
                         </div>
                     </div>
-                    <div className="flex items-center font-semibold text-lg">
+                    <div className="hidden md:flex items-center font-semibold text-lg mr-1">
                         <MusicalNoteIcon className="h-5 mr-1" />
                         {album.song_amount}
                     </div>
-                    <div>
+                    <div className="flex">
                         <Link
                             to={`/dashboard/mymusic/edit-album/${album.id}`}
                             state={{ album }}
@@ -91,7 +91,7 @@ function MyAlbums() {
                                 type="button"
                                 className="focus:ring-4 rounded-lg p-1 mr-2 bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-blue-800"
                             >
-                                <PencilIcon className="h-6" />
+                                <PencilIcon className="h-5 md:h-6" />
                             </button>
                         </Link>
                         <button
@@ -99,7 +99,7 @@ function MyAlbums() {
                             onClick={() => deleteAlbum(album.id)}
                             className="focus:ring-4 rounded-lg p-1 bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-red-800"
                         >
-                            <TrashIcon className="h-6" />
+                            <TrashIcon className="h-5 md:h-6" />
                         </button>
                     </div>
                 </div>
@@ -109,7 +109,7 @@ function MyAlbums() {
                 className="flex w-full h-12 items-center bg-zinc-900/50 border border-gray-600 px-4 py-2 rounded-lg mb-2 hover:bg-zinc-800/75 cursor-pointer"
             >
                 <PlusCircleIcon className="h-6 mr-2" />
-                <span className="font-semibold">Create a new album</span>
+                <span className="font-semibold">New album</span>
             </Link>
         </div>
     );

@@ -7,13 +7,16 @@ import {
 
 export const navLinks = [
     // [{ name: "Home", path: "/home" }, <HomeIcon className="h-6" />],
-    [{ name: "Discover", path: "/discover" }, <GlobeAltIcon className="h-6" />],
+    [
+        { name: "Discover", path: "/discover" },
+        <GlobeAltIcon className="h-full text-inherit" />,
+    ],
     [
         { name: "Search", path: "/search" },
-        <MagnifyingGlassIcon className="h-6" />,
+        <MagnifyingGlassIcon className="h-full text-inherit" />,
     ],
     [
         { name: "Library", path: "/library" },
-        <MusicalNoteIcon className="h-6" />,
+        <MusicalNoteIcon className="h-full text-inherit" />,
     ],
 ];

@@ -74,13 +74,13 @@ class UploadController extends Controller
             'release_date' => $album['release_date'],
             'genre_id' => $album['genre_id'],
             'album_id' => $album['id'],
-            'album_order' => ++$album['song_amount'],
+            'album_order' => $album['song_amount'] + 1,
             'song_path' => $song_file_name,
             'cover_path' => $album['cover'],
             'user_id' => $request->user()['id']
         ]);
 
-        $album->song_amount = ++$album['song_amount'];
+        $album->song_amount = $album['song_amount'] + 1;
         $album->save();
         return response()->json([
             'message' => "Successfully published song!",
@@ -104,7 +104,7 @@ class UploadController extends Controller
             'cover' => $cover_file_name,
             'genre_id' => $data['genre'],
             'release_date' => $data['release_date'],
-            'user_id' => 1,
+            'user_id' => $request->user()['id'],
         ]);
 
         return response()->json([

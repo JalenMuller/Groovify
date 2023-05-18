@@ -13,6 +13,7 @@ function SongRow(props: {
     song: Song;
     i: number;
     rowStyle?: string;
+    hiddenColumns: string[];
 }) {
     const context: any = useContext(MusicPlayerContext);
     const [showActions, setShowActions] = useState(false);
@@ -40,13 +41,18 @@ function SongRow(props: {
                 }}
                 key={song.id}
             >
-                <td scope="row" className="px-6 py-2 font-normal text-white">
-                    {active ? (
-                        <ChartBarIcon className="h-4 fill-blue-600" />
-                    ) : (
-                        props.i + 1
-                    )}
-                </td>
+                {!props.hiddenColumns?.includes("index") && (
+                    <td
+                        scope="row"
+                        className="px-2 py-2 text-center font-normal text-white"
+                    >
+                        {active ? (
+                            <ChartBarIcon className="h-4 fill-blue-600" />
+                        ) : (
+                            props.i + 1
+                        )}
+                    </td>
+                )}
                 <td
                     scope="row"
                     className="flex px-6 py-2 font-normal whitespace-nowrap text-white"
@@ -64,25 +70,31 @@ function SongRow(props: {
                                 context.song.id === song.id
                                     ? "text-blue-500"
                                     : "text-white"
-                            } text-base md:text-sm md:leading-6 font-semibold max-w-12 truncate`}
+                            } text-base md:text-sm md:leading-6 font-semibold max-w-[12rem] truncate`}
                         >
                             {song.name}
                         </p>
-                        <p className="text-sm md:text-xs text-gray-400 truncate">
+                        <p className="text-sm md:text-xs text-gray-400 truncate max-w-[12rem]">
                             {song.artist}
                             {features && `, ${features}`}
                         </p>
                     </div>
                 </td>
-                <td className="px-6 py-2 hidden md:table-cell truncate">
-                    {song.album_title ?? "None"}
-                </td>
-                <td className="px-6 py-2 hidden md:table-cell">
-                    {timeToPrettyDate(song.release_date)}
-                </td>
-                <td className="px-6 py-2 hidden md:table-cell">
-                    {secondsToMinutes(song.length)}
-                </td>
+                {!props.hiddenColumns?.includes("album") && (
+                    <td className="px-6 py-2 hidden md:table-cell truncate max-w-[12rem]">
+                        {song.album_title ?? "None"}
+                    </td>
+                )}
+                {!props.hiddenColumns?.includes("date") && (
+                    <td className="px-6 py-2 hidden md:table-cell">
+                        {timeToPrettyDate(song.release_date)}
+                    </td>
+                )}
+                {!props.hiddenColumns?.includes("length") && (
+                    <td className="px-6 py-2 hidden md:table-cell text-right">
+                        {secondsToMinutes(song.length)}
+                    </td>
+                )}
                 <td
                     onClick={(e) => {
                         e.stopPropagation();
