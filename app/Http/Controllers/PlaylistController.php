@@ -13,6 +13,7 @@ class PlaylistController extends Controller
 {
     public function index(Request $request)
     {
+        // get single playlist
         $playlist = Playlist::where([['id', $request['id']], ['user_id', $request->user()['id']]])->first();
         $playlist_songs = PlaylistSong::where('playlist_id', $playlist['id'])->get();
         $song_array = [];
@@ -25,10 +26,12 @@ class PlaylistController extends Controller
     public function create(CreatePlaylistRequest $request)
     {
         $data = $request->validated();
-        Playlist::create([
+        $playlist = Playlist::create([
             'name' => $data['name'],
             'user_id' => $request->user()['id']
         ]);
+        return response()->json(['message' => "Your playlist has been created", 'playlist' => $playlist]);
+
     }
     public function add_song(PlaylistSongRequest $request)
     {
@@ -51,7 +54,8 @@ class PlaylistController extends Controller
     }
     public function my_playlists(Request $request)
     {
-        $playlists = Playlist::where('user_id', $request->user()['id'])->get();
+        // get all playlists belonging to user
+        $playlists = Playlist::where('user_id', $request->user()['id'])->orderBy('created_at', 'desc')->get();
         return response()->json($playlists);
     }
 }

@@ -14,7 +14,11 @@ interface FormFields {
     email: null | string;
     avatar: null | string;
 }
-
+const defaultFields = {
+    name: null,
+    email: null,
+    avatar: null,
+};
 export default function Profile() {
     const { csrfToken }: any = useAuth();
     const statusContext: any = useContext(StatusMessageContext);
@@ -22,11 +26,8 @@ export default function Profile() {
     const [avatarSrc, setAvatarSrc] = useState<any>("");
     const [requestLoading, setRequestLoading] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [fieldErrors, setFieldErrors] = useState<FormFields>({
-        name: null,
-        email: null,
-        avatar: null,
-    });
+    const [fieldErrors, setFieldErrors] = useState<FormFields>(defaultFields);
+
     const fileInput: any = useRef(null);
     const openFileInput = () => {
         fileInput.current.click();
@@ -86,6 +87,7 @@ export default function Profile() {
                     "success",
                     "Your changes have been saved"
                 );
+                setFieldErrors(defaultFields);
             })
             .catch((err) => {
                 const errors = getFieldErrors(err.response.data.errors);
@@ -97,7 +99,7 @@ export default function Profile() {
                     );
                 } else {
                     // Field errors found? Loop through and set the field errors state
-                    let newState = fieldErrors;
+                    let newState = defaultFields;
                     errors.forEach((error: any) => {
                         newState[error.field as keyof FormFields] =
                             error.errorMessage;
@@ -125,6 +127,7 @@ export default function Profile() {
                         type="file"
                         id="avatar"
                         ref={fileInput}
+                        accept="image/png, image/jpeg, image/jpg"
                         onChange={(e) => previewFile(e)}
                     />
                     <div className="w-full md:w-3/4 mx-auto px-2">
@@ -168,7 +171,13 @@ export default function Profile() {
                                         id="name"
                                         className="sm:text-sm rounded-lg block w-full bg-zinc-900 placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500"
                                         defaultValue={user?.name}
+                                        required
                                     />
+                                    {fieldErrors.name && (
+                                        <p className="text-sm text-red-600">
+                                            {fieldErrors.name}
+                                        </p>
+                                    )}
                                 </div>
                             </div>
                             <div>
@@ -179,12 +188,18 @@ export default function Profile() {
                                     Email
                                 </label>
                                 <input
-                                    type="text"
+                                    type="email"
                                     name="email"
                                     id="email"
                                     className="sm:text-sm rounded-lg block w-full bg-zinc-900 placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500"
                                     defaultValue={user?.email}
+                                    required
                                 />
+                                {fieldErrors.email && (
+                                    <p className="text-sm text-red-600">
+                                        {fieldErrors.email}
+                                    </p>
+                                )}
                             </div>
                             <button
                                 type="submit"

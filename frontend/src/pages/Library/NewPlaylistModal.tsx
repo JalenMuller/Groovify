@@ -3,6 +3,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import axios from "../../axios";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 import LoadingDots from "../../components/LoadingDots";
+import { useNavigate } from "react-router-dom";
 
 function NewPlaylistModal(props: {
     toggleModal: () => void;
@@ -10,7 +11,7 @@ function NewPlaylistModal(props: {
 }) {
     const [loading, setLoading] = useState(false);
     const { csrfToken } = useAuth();
-
+    const navigate = useNavigate();
     const handleSubmit = async (e: any) => {
         e.preventDefault();
         setLoading(true);
@@ -22,8 +23,9 @@ function NewPlaylistModal(props: {
         try {
             const res = await axios.post("/playlist/create", body);
             if (res.status === 200) {
-                console.log(res);
+                console.log(res.data.playlist.id);
                 handleClose();
+                navigate(`/playlist/${res.data?.playlist.id}`);
             }
         } catch (error: any) {
             console.log(error);

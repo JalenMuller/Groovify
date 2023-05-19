@@ -17,19 +17,26 @@ interface FormFields {
     release_date: null | string;
     genre: null | string;
 }
+const defaultFields = {
+    name: null,
+    artist: null,
+    song: null,
+    cover: null,
+    release_date: null,
+    genre: null,
+};
 function UploadSingleForm() {
     const { csrfToken } = useAuth();
     const statusContext: any = useContext(StatusMessageContext);
     const [loading, setLoading] = useState(false);
     const [featureInputs, setFeatureInputs] = useState<ReactNode[]>([]);
-    const [fieldErrors, setFieldErrors] = useState<FormFields>({
-        name: null,
-        artist: null,
-        song: null,
-        cover: null,
-        release_date: null,
-        genre: null,
-    });
+    const [fieldErrors, setFieldErrors] = useState<FormFields>(defaultFields);
+
+    const resetForm = () => {
+        (
+            document.getElementById("upload-single-form") as HTMLFormElement
+        ).reset();
+    };
     const addFeatureInput = () => {
         setFeatureInputs(
             featureInputs.concat(
@@ -39,7 +46,6 @@ function UploadSingleForm() {
                         name="feature"
                         id="feature"
                         className="block h-full w-full text-sm border rounded-lg text-white focus:outline-none bg-gray-700 border-gray-600 placeholder-gray-400"
-                        // required
                     />
                 </div>
             )
@@ -89,6 +95,8 @@ function UploadSingleForm() {
         })
             .then((res) => {
                 statusContext.updateStatus("success", res.data?.message);
+                setFieldErrors(defaultFields);
+                resetForm();
             })
             .catch((err) => {
                 const errors = getFieldErrors(err.response.data.errors);
@@ -100,18 +108,19 @@ function UploadSingleForm() {
                     );
                 else {
                     // Field errors found? Loop through and set the field errors state
-                    let newState = fieldErrors;
+                    let newState = defaultFields;
                     errors.forEach((error: any) => {
                         newState[error.field as keyof FormFields] =
                             error.errorMessage;
                     });
+
                     setFieldErrors({ ...newState });
                 }
             });
 
         setLoading(false);
     };
-
+    const todayDateString = new Date().toISOString().split("T")[0];
     return (
         <>
             <form
@@ -119,6 +128,7 @@ function UploadSingleForm() {
                 action="#"
                 method="post"
                 onSubmit={handleSubmit}
+                id="upload-single-form"
             >
                 <h2 className="font-semibold text-xl leading-7">
                     Publish a new song
@@ -135,7 +145,7 @@ function UploadSingleForm() {
                         name="name"
                         id="name"
                         className="bg-gray-50 border border-gray-300 text-white sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        // required
+                        required
                     />
                     {fieldErrors.name && (
                         <span className="text-sm text-red-500">
@@ -155,7 +165,7 @@ function UploadSingleForm() {
                         name="artist"
                         id="artist"
                         className="block w-full text-sm border rounded-lg text-white focus:outline-none bg-gray-700 border-gray-600 placeholder-gray-400"
-                        // required
+                        required
                     />
                     {fieldErrors.artist && (
                         <span className="text-sm text-red-500">
@@ -176,7 +186,6 @@ function UploadSingleForm() {
                             name="feature"
                             id="feature"
                             className="block h-full w-full text-sm border rounded-lg text-white focus:outline-none bg-gray-700 border-gray-600 placeholder-gray-400"
-                            // required
                         />
                         <div
                             onClick={() => addFeatureInput()}
@@ -202,6 +211,7 @@ function UploadSingleForm() {
                         type="date"
                         id="release_date"
                         name="release_date"
+                        max={todayDateString}
                         className="block cursor-pointer text-sm md:min-w-1/3 bg-gray-700 border border-gray-600 text-white rounded-lg"
                         // required
                     />

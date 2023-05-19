@@ -6,6 +6,7 @@ import { Album } from "../interfaces/AlbumInterface";
 import AlbumGrid from "../components/Music/AlbumGrid";
 import PageHeader from "../components/PageHeader";
 import { StatusMessageContext } from "../contexts/StatusMessageContext";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 function Discover() {
     const statusContext: any = useContext(StatusMessageContext);
@@ -25,6 +26,7 @@ function Discover() {
     };
     useEffect(() => {
         const fetchRecentSongs = async () => {
+            setLoading(true);
             try {
                 const res = await axios.get("/recent-songs");
                 if (res.status === 200) {
@@ -36,8 +38,11 @@ function Discover() {
                     "Something went wrong, please try again."
                 );
             }
+            setLoading(false);
         };
         const fetchRecentAlbums = async () => {
+            setLoading(true);
+
             try {
                 const res = await axios.get("/recent-albums");
                 if (res.status === 200) {
@@ -49,51 +54,59 @@ function Discover() {
                     "Something went wrong, please try again."
                 );
             }
+            setLoading(false);
         };
-        setLoading(true);
+
         fetchRecentSongs();
         fetchRecentAlbums();
-        setLoading(false);
     }, []);
     return (
         <div
             className="w-full h-full pt-14 flex-col p-2 md:px-5 overflow-y-auto"
             id="scrollable"
         >
-            <div className="mx-5 mb-3 mt-2">
-                <PageHeader
-                    title="Discover"
-                    bodyText="Discover the latest music shared on Groovify."
-                />
-                <div className="mt-5">
-                    <button
-                        type="button"
-                        className={`${
-                            currentTab === "songs"
-                                ? "border-blue-600 text-blue-700"
-                                : "border-gray-500 text-gray-300"
-                        } border bg-gray-800 focus:outline-none font-semibold rounded-full text-sm px-3 py-1.5 mr-2 mb-2 hover:text-white hover:border-white focus:ring-gray-700 transition duration-75`}
-                        onClick={() => setCurrentTab("songs")}
-                    >
-                        Songs
-                    </button>
-                    <button
-                        type="button"
-                        className={`${
-                            currentTab === "albums"
-                                ? "border-blue-600 text-blue-700"
-                                : "border-gray-500 text-gray-300"
-                        } border bg-gray-800 focus:outline-none font-semibold rounded-full text-sm px-3 py-1.5 mr-2 mb-2 hover:text-white hover:border-white focus:ring-gray-700 transition duration-75`}
-                        onClick={() => setCurrentTab("albums")}
-                    >
-                        Albums
-                    </button>
+            {loading ? (
+                <div className="w-full h-full">
+                    <LoadingSpinner className="flex items-center justify-center w-full h-full" />
                 </div>
-            </div>
+            ) : (
+                <>
+                    <div className="mx-5 mb-3 mt-2">
+                        <PageHeader
+                            title="Discover"
+                            bodyText="Discover the latest music shared on Groovify."
+                        />
+                        <div className="mt-5">
+                            <button
+                                type="button"
+                                className={`${
+                                    currentTab === "songs"
+                                        ? "border-blue-600 text-blue-700"
+                                        : "border-gray-500 text-gray-300"
+                                } border bg-gray-800 focus:outline-none font-semibold rounded-full text-sm px-3 py-1.5 mr-2 mb-2 hover:text-white hover:border-white focus:ring-gray-700 transition duration-75`}
+                                onClick={() => setCurrentTab("songs")}
+                            >
+                                Songs
+                            </button>
+                            <button
+                                type="button"
+                                className={`${
+                                    currentTab === "albums"
+                                        ? "border-blue-600 text-blue-700"
+                                        : "border-gray-500 text-gray-300"
+                                } border bg-gray-800 focus:outline-none font-semibold rounded-full text-sm px-3 py-1.5 mr-2 mb-2 hover:text-white hover:border-white focus:ring-gray-700 transition duration-75`}
+                                onClick={() => setCurrentTab("albums")}
+                            >
+                                Albums
+                            </button>
+                        </div>
+                    </div>
 
-            <div className=" overflow-x-hidden overflow-y-hidden">
-                {renderTab()}
-            </div>
+                    <div className=" overflow-x-hidden overflow-y-hidden">
+                        {renderTab()}
+                    </div>
+                </>
+            )}
         </div>
     );
 }

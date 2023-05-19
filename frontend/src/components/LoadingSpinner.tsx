@@ -2,7 +2,7 @@ import React from "react";
 
 function LoadingSpinner(props: { className?: string }) {
     return (
-        <div className={`z-50 ${props?.className}`}>
+        <div className={`z-40 ${props?.className}`}>
             <div role="status">
                 <svg
                     aria-hidden="true"

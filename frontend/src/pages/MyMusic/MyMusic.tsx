@@ -21,18 +21,15 @@ function MyMusic() {
         }
     };
     return (
-        <div className="w-full h-full flex m-auto bg-zinc-800 border border-gray-700 bg-gray-800 shadow">
-            <aside
-                className="w-2/4 md:w-3/12 h-full inline-block"
-                aria-label="Sidenav"
-            >
-                <div className="flex flex-col items-center overflow-y-auto py-6 h-full border-r bg-gray-800 border-gray-700">
-                    <h2 className="mb-5 text-xl text-white font-semibold">
+        <div className="w-full h-full flex flex-col m-auto bg-zinc-800 border border-gray-700 bg-gray-800 shadow">
+            <div className="w-full h-10 border-b py-7 bg-gray-800 border-gray-700 font-semibold">
+                <div className="w-4/5 flex justify-between md:justify-start items-center px-2  h-full text-sm">
+                    <h2 className="text-lg md:text-xl text-white font-bold md:mr-4">
                         My Music
                     </h2>
-                    <ul className="space-y-2 px-2 text-xs md:text-sm">
+                    <div className="flex overflow-x-auto ">
                         <li
-                            className={`inline-flex w-full bg-gray-600/25 group rounded-md cursor-pointer ${
+                            className={`inline-flex px-2 py-1.5 h-fit bg-gray-600/25 group rounded-md mr-1 md:mr-2 border border-zinc-600 cursor-pointer ${
                                 currentTab == "upload-music"
                                     ? "text-blue-500"
                                     : "text-white"
@@ -41,13 +38,13 @@ function MyMusic() {
                         >
                             <Link
                                 to="/dashboard/mymusic/upload-music"
-                                className="w-full h-full py-2 text-center"
+                                className="w-full h-full text-center"
                             >
                                 Upload Music
                             </Link>
                         </li>
                         <li
-                            className={`inline-flex w-full bg-gray-600/25 group rounded-md cursor-pointer ${
+                            className={`inline-flex px-2 py-1.5 h-fit bg-gray-600/25 group rounded-md border border-zinc-600 cursor-pointer ${
                                 currentTab == "my-library"
                                     ? "text-blue-500"
                                     : "text-white"
@@ -56,14 +53,14 @@ function MyMusic() {
                         >
                             <Link
                                 to="/dashboard/mymusic/my-library"
-                                className="w-full py-2 text-center"
+                                className="w-full text-center"
                             >
                                 My Library
                             </Link>
                         </li>
-                    </ul>
+                    </div>
                 </div>
-            </aside>
+            </div>
             {returnTab()}
         </div>
     );

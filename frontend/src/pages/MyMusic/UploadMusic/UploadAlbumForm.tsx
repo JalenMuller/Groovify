@@ -20,20 +20,20 @@ interface FormFields {
     release_date: null | string;
     genre: null | string;
 }
-
+const defaultFields = {
+    title: null,
+    artist: null,
+    cover: null,
+    release_date: null,
+    genre: null,
+};
 function UploadAlbumForm() {
     const { csrfToken } = useAuth();
     const statusContext: any = useContext(StatusMessageContext);
     const [requestLoading, setRequestLoading] = useState(false);
     const [loading, setLoading] = useState(false);
     const [statusMessage, setStatusMessage] = useState<any>(false);
-    const [fieldErrors, setFieldErrors] = useState<FormFields>({
-        title: null,
-        artist: null,
-        cover: null,
-        release_date: null,
-        genre: null,
-    });
+    const [fieldErrors, setFieldErrors] = useState<FormFields>(defaultFields);
     const navigate = useNavigate();
 
     const createAlbum = async (e: any) => {
@@ -60,7 +60,6 @@ function UploadAlbumForm() {
             bodyFormData.append("release_date", time.toString());
         }
         if (features.length > 0) {
-            console.log(features);
             bodyFormData.append("features", JSON.stringify(features));
         }
 
@@ -85,11 +84,12 @@ function UploadAlbumForm() {
                     );
                 else {
                     // Field errors found? Loop through and set the field errors state
-                    let newState = fieldErrors;
+                    let newState = defaultFields;
                     errors.forEach((error: any) => {
                         newState[error.field as keyof FormFields] =
                             error.errorMessage;
                     });
+                    console.log(errors);
                     setFieldErrors({ ...newState });
                 }
                 // console.log(res);
@@ -97,6 +97,8 @@ function UploadAlbumForm() {
 
         setRequestLoading(false);
     };
+    const todayDateString = new Date().toISOString().split("T")[0];
+
     return (
         <>
             {loading ? (
@@ -126,7 +128,7 @@ function UploadAlbumForm() {
                                 name="title"
                                 id="title"
                                 className="border sm:text-sm rounded-lg block w-full bg-gray-700 border-gray-600 placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500"
-                                // required
+                                required
                             />
                             {fieldErrors.title && (
                                 <span className="text-sm text-red-500">
@@ -146,7 +148,7 @@ function UploadAlbumForm() {
                                 name="artist"
                                 id="artist"
                                 className="border sm:text-sm rounded-lg block w-full bg-gray-700 border-gray-600 placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500"
-                                // required
+                                required
                             />
                             {fieldErrors.artist && (
                                 <span className="text-sm text-red-500">
@@ -175,7 +177,8 @@ function UploadAlbumForm() {
                                 id="release_date"
                                 name="release_date"
                                 className="block cursor-pointer text-sm md:min-w-1/3 bg-gray-700 border border-gray-600 text-white rounded-lg"
-                                // required
+                                max={todayDateString}
+                                required
                             />
                             {fieldErrors.release_date && (
                                 <span className="text-sm text-red-500">
@@ -196,7 +199,7 @@ function UploadAlbumForm() {
                                 id="cover"
                                 className="block w-full text-sm border rounded-lg cursor-pointer text-gray-400 focus:outline-none bg-gray-700 border-gray-600 placeholder-gray-400"
                                 accept="image/png, image/jpeg"
-                                // required
+                                required
                             />
                             {fieldErrors.cover && (
                                 <span className="text-sm text-red-500">

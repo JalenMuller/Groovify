@@ -31,7 +31,7 @@ function StatusMessage() {
         <div
             className={`${
                 !hidden && "scale-100"
-            } scale-0 z-50 absolute top-5 left-1/2 transform -translate-x-1/2 flex items-center justify-center max-w-xs p-4 mb-4 rounded-lg shadow text-gray-400 bg-gray-800 border border-zinc-500 transition ${
+            } scale-0 z-50 absolute top-5 left-1/2 transform -translate-x-1/2 flex items-center justify-center md:max-w-[75%] p-4 mb-4 rounded-lg shadow text-gray-400 bg-gray-800 border border-zinc-500 transition ${
                 context.statusMessage?.className
             }`}
             role="alert"

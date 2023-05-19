@@ -6,9 +6,12 @@ import axios from "../axios";
 import SongTable from "../components/Music/SongTable";
 import AlbumGrid from "../components/Music/AlbumGrid";
 import { StatusMessageContext } from "../contexts/StatusMessageContext";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 function Search() {
     const [searchType, setSearchType] = useState("songs");
+    const [loading, setLoading] = useState(false);
+    const [noResults, setNoResults] = useState(false);
     const [songs, setSongs] = useState<Song[]>([]);
     const [albums, setAlbums] = useState<Album[]>([]);
     const statusContext: any = useContext(StatusMessageContext);
@@ -23,11 +26,15 @@ function Search() {
         }
     };
     const switchSearchType = (type: string) => {
+        setNoResults(false);
         setSongs([]);
         setAlbums([]);
         setSearchType(type);
     };
     const searchSongs = async (inputValue: string) => {
+        setLoading(true);
+        setSongs([]);
+
         const params = new URLSearchParams([
             ["type", "songs"],
             ["value", inputValue],
@@ -35,7 +42,12 @@ function Search() {
         try {
             const res = await axios.get("/search", { params: params });
             if (res.status === 200) {
-                setSongs(res.data);
+                if (res.data.length > 0) {
+                    setNoResults(false);
+                    setSongs(res.data);
+                } else {
+                    setNoResults(true);
+                }
             }
         } catch (error: any) {
             statusContext.updateStatus(
@@ -43,8 +55,11 @@ function Search() {
                 "Something went wrong, please try again"
             );
         }
+        setLoading(false);
     };
     const searchAlbums = async (inputValue: string) => {
+        setLoading(true);
+        setAlbums([]);
         const params = new URLSearchParams([
             ["type", "albums"],
             ["value", inputValue],
@@ -52,8 +67,12 @@ function Search() {
         try {
             const res = await axios.get("/search", { params: params });
             if (res.status === 200) {
-                console.log(res.data);
-                setAlbums(res.data);
+                if (res.data.length > 0) {
+                    setNoResults(false);
+                    setAlbums(res.data);
+                } else {
+                    setNoResults(true);
+                }
             }
         } catch (error: any) {
             statusContext.updateStatus(
@@ -61,6 +80,7 @@ function Search() {
                 "Something went wrong, please try again"
             );
         }
+        setLoading(false);
     };
 
     return (
@@ -78,11 +98,11 @@ function Search() {
                     title="Search"
                     bodyText="Search for a song or album on Groovify"
                 />
-                <div className="relative w-4/5 md:w-2/3 mt-5">
+                <div className="relative w-full md:w-2/3 mt-5">
                     <input
-                        type="search"
+                        type="text"
                         id="search"
-                        className="block p-2.5 w-full z-20 px-5 text-sm text-gray-100 bg-gray-700 rounded-full border border-gray-500 focus:ring-gray-300 focus:border-gray-300 placeholder:text-gray-300"
+                        className="block p-2.5 w-full z-20 px-5 text-sm text-gray-100 bg-gray-700 rounded-full border border-gray-500 focus:ring-gray-500 focus:border-gray-500 placeholder:text-gray-300"
                         placeholder="Search for music"
                         required
                     />
@@ -133,15 +153,26 @@ function Search() {
                     </button>
                 </div>
             </form>
-            <div className="mt-3">
-                {searchType === "songs" ? (
-                    songs.length > 0 && (
-                        <SongTable songs={songs} tableHead={false} />
-                    )
-                ) : (
-                    <AlbumGrid albums={albums} />
-                )}
-            </div>
+            {loading ? (
+                <div className="h-1/2">
+                    <LoadingSpinner className="flex items-center justify-center w-full h-full" />
+                </div>
+            ) : (
+                <div className="mt-3">
+                    {noResults && (
+                        <p className="text-gray-400 ml-3">
+                            No {searchType} found.
+                        </p>
+                    )}
+                    {searchType === "songs" ? (
+                        songs.length > 0 && (
+                            <SongTable songs={songs} tableHead={false} />
+                        )
+                    ) : (
+                        <AlbumGrid albums={albums} />
+                    )}
+                </div>
+            )}
         </div>
     );
 }

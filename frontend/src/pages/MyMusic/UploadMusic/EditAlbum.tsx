@@ -5,7 +5,7 @@ import {
 } from "@heroicons/react/24/solid";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import { ReactNode, useContext, useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Song } from "../../../interfaces/SongInterface";
 import { Album } from "../../../interfaces/AlbumInterface";
 import {
@@ -23,30 +23,38 @@ interface FormFields {
     name: null | string;
     song: null | string;
 }
+const defaultFields = {
+    name: null,
+    song: null,
+};
 function EditAlbum() {
-    const { csrfToken } = useAuth();
+    const { csrfToken, user } = useAuth();
     const statusContext: any = useContext(StatusMessageContext);
     const [requestLoading, setRequestLoading] = useState(false);
     const [loading, setLoading] = useState(false);
     const [featureInputs, setFeatureInputs] = useState<ReactNode[]>([]);
-    const [fieldErrors, setFieldErrors] = useState<FormFields>({
-        name: null,
-        song: null,
-    });
+    const [fieldErrors, setFieldErrors] = useState<FormFields>(defaultFields);
     const [songs, setSongs] = useState<Song[]>([]);
     const [album, setAlbum] = useState<Album | any>({});
     const { id } = useParams();
+    const navigate = useNavigate();
 
     const fetchAlbum = async () => {
         setLoading(true);
         try {
-            const res = await axios.get(`/album/${id}`);
+            const res = await axios.get(`/my-album/${id}`);
             if (res.status === 200) {
                 setAlbum(res.data.album);
                 setSongs(res.data.songs);
             }
+            console.log(res.data);
         } catch (error: any) {
-            console.log(error);
+            navigate("/dashboard/mymusic/my-library/albums");
+            statusContext.updateStatus(
+                "error",
+                error.response?.data.message ??
+                    "Something went wrong, please try again."
+            );
         }
         setLoading(false);
     };
@@ -92,6 +100,8 @@ function EditAlbum() {
         })
             .then((res) => {
                 statusContext.updateStatus("success", res.data?.message);
+                resetForm();
+                setFieldErrors(defaultFields);
                 fetchAlbum();
                 console.log(res);
             })
@@ -105,7 +115,7 @@ function EditAlbum() {
                     );
                 else {
                     // Field errors found? Loop through and set the field errors state
-                    let newState = fieldErrors;
+                    let newState = defaultFields;
                     errors.forEach((error: any) => {
                         newState[error.field as keyof FormFields] =
                             error.errorMessage;
@@ -117,6 +127,9 @@ function EditAlbum() {
 
         setRequestLoading(false);
     };
+    const resetForm = () => {
+        (document.getElementById("edit-album-form") as HTMLFormElement).reset();
+    };
     const deleteAlbumSong = async (id: number) => {
         setLoading(true);
         try {
@@ -127,7 +140,12 @@ function EditAlbum() {
                 // todo: add success message
             }
         } catch (error: any) {
-            // todo: add error message
+            console.log(error);
+            statusContext.updateStatus(
+                "error",
+                error.response?.data.message ??
+                    "Something went wrong, please try again."
+            );
         }
         setLoading(false);
     };
@@ -141,7 +159,6 @@ function EditAlbum() {
                         name="feature"
                         id="feature"
                         className="block h-full w-full text-sm border rounded-lg text-white focus:outline-none bg-gray-700 border-gray-600 placeholder-gray-400"
-                        // required
                     />
                 </div>
             )
@@ -246,6 +263,7 @@ function EditAlbum() {
                             action="#"
                             method="post"
                             onSubmit={HandleSubmit}
+                            id="edit-album-form"
                         >
                             <h1 className="text-2xl font-semibold leading-4">
                                 Add a new song
@@ -262,7 +280,7 @@ function EditAlbum() {
                                     name="name"
                                     id="name"
                                     className="bg-gray-50 border border-gray-300 text-white sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                    // required
+                                    required
                                 />
                                 {fieldErrors.name && (
                                     <span className="text-sm text-red-500">
@@ -284,7 +302,6 @@ function EditAlbum() {
                                         name="feature"
                                         id="feature"
                                         className="block h-full w-full text-sm border rounded-lg text-white focus:outline-none bg-gray-700 border-gray-600 placeholder-gray-400"
-                                        // required
                                     />
                                     <div
                                         onClick={() => addFeatureInput()}
@@ -308,7 +325,7 @@ function EditAlbum() {
                                     id="song"
                                     className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
                                     accept=".mp3"
-                                    // required
+                                    required
                                 />
                             </div>
                             <button

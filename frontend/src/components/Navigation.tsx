@@ -42,11 +42,11 @@ function Navigation() {
                 aria-label="Sidenav"
             >
                 <div className="overflow-y-auto py-5 h-full bg-white border-r border-gray-200 dark:bg-gray-800 dark:border-gray-700">
-                    <div className="flex items-center px-1 py-2 mb-3 text-base rounded-lg text-white BORE">
+                    <div className="flex items-center px-1 pb-2 mb-3 text-base rounded-lg text-white BORE">
                         <Logo className="h-8 mr-1" />
                         <span className="font-semibold text-xl">Groovify</span>
                     </div>
-                    <ul className="space-y-2 px-2">
+                    <ul className="space-y-2 px-2 py-5 border-b border-t border-gray-700">
                         {navLinks.map((link: any) => {
                             // first index contains name/path object
                             // second index contains the icon component
@@ -74,7 +74,7 @@ function Navigation() {
                         })}
                     </ul>
                     {playlists.length > 0 && (
-                        <div className="pt-5 px-2 h-1/2 mt-5 space-y-1 border-t border-gray-700">
+                        <div className="px-2 h-2/5 mt-2 space-y-1">
                             <div className="flex items-center py-2 px-3 text-base font-normal text-gray-900 rounded-lg transition duration-75 dark:text-white group">
                                 <span className="font-semibold">
                                     My Playlists
@@ -84,14 +84,14 @@ function Navigation() {
                             <ul className="max-h-full overflow-y-auto">
                                 {playlists.map((playlist) => (
                                     <li key={playlist.id}>
-                                        <a
-                                            href="#"
+                                        <Link
+                                            to={`playlist/${playlist.id}`}
                                             className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group"
                                         >
                                             <span className="ml-1 text-sm truncate">
                                                 {playlist.name}
                                             </span>
-                                        </a>
+                                        </Link>
                                     </li>
                                 ))}
                             </ul>

@@ -44,6 +44,16 @@ class MusicController extends Controller
 
         return response()->json(['album' => $album, 'songs' => $songs]);
     }
+    public function my_album(Request $request)
+    {
+        $album = Album::where('id', $request['id'])->first();
+        if ($album['user_id'] !== $request->user()['id']) {
+            return response()->json(['message' => "That's not your album"], 403);
+        }
+        $songs = Song::where('album_id', $request['id'])->get();
+
+        return response()->json(['album' => $album, 'songs' => $songs]);
+    }
     public function search(Request $request)
     {
         if ($request->type == "songs") {
@@ -64,7 +74,7 @@ class MusicController extends Controller
             $song->delete();
             return response()->json("Deleted " . $song['name']);
         } else {
-            return response()->json("Not your song!");
+            return response()->json("Not your song!", 403);
         }
     }
     public function destroy_album_song(Request $request)
@@ -95,7 +105,7 @@ class MusicController extends Controller
         } else {
             return response()->json([
                 'message' => "Not your song!",
-            ]);
+            ], 403);
         }
     }
     public function destroy_album(Request $request)
