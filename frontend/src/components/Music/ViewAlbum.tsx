@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "../../axios";
 import LoadingSpinner from "../LoadingSpinner";
@@ -6,9 +6,12 @@ import { Album } from "../../interfaces/AlbumInterface";
 import { Song } from "../../interfaces/SongInterface";
 import SongTable from "./SongTable";
 import MusicHeader from "../MusicHeader";
+import { StatusMessageContext } from "../../contexts/StatusMessageContext";
 
 function ViewAlbum() {
     const params = useParams();
+    const statusContext: any = useContext(StatusMessageContext);
+
     const [loading, setLoading] = useState(true);
     const [album, setAlbum] = useState<null | Album>(null);
     const [songs, setSongs] = useState<Song[]>([]);
@@ -17,12 +20,14 @@ function ViewAlbum() {
         try {
             const res = await axios.get(`/album/${params.id}`);
             if (res.status === 200) {
-                console.log(res.data);
                 setAlbum(res.data.album);
                 setSongs(res.data.songs);
             }
         } catch (error: any) {
-            console.log(error);
+            statusContext.updateStatus(
+                "error",
+                "Something went wrong, please try again."
+            );
         }
         setLoading(false);
     };

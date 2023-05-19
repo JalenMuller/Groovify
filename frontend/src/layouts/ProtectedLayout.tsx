@@ -74,9 +74,7 @@ export default function DefaultLayout() {
                 localStorage.removeItem("user");
                 window.location.href = "/";
             }
-        } catch (error) {
-            console.log(error);
-        }
+        } catch (error) {}
     };
     return (
         <>

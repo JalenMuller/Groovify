@@ -47,7 +47,6 @@ function EditAlbum() {
                 setAlbum(res.data.album);
                 setSongs(res.data.songs);
             }
-            console.log(res.data);
         } catch (error: any) {
             navigate("/dashboard/mymusic/my-library/albums");
             statusContext.updateStatus(
@@ -87,7 +86,6 @@ function EditAlbum() {
         bodyFormData.append("length", songLength);
         bodyFormData.append("album_id", album.id.toString());
         if (features.length > 0) {
-            console.log(features);
             bodyFormData.append("features", JSON.stringify(features));
         }
 
@@ -103,7 +101,6 @@ function EditAlbum() {
                 resetForm();
                 setFieldErrors(defaultFields);
                 fetchAlbum();
-                console.log(res);
             })
             .catch((err) => {
                 const errors = getFieldErrors(err.response.data.errors);
@@ -122,7 +119,6 @@ function EditAlbum() {
                     });
                     setFieldErrors({ ...newState });
                 }
-                // console.log(res);
             });
 
         setRequestLoading(false);
@@ -140,7 +136,6 @@ function EditAlbum() {
                 // todo: add success message
             }
         } catch (error: any) {
-            console.log(error);
             statusContext.updateStatus(
                 "error",
                 error.response?.data.message ??
@@ -279,7 +274,7 @@ function EditAlbum() {
                                     type="text"
                                     name="name"
                                     id="name"
-                                    className="bg-gray-50 border border-gray-300 text-white sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    className="border sm:text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
                                     required
                                 />
                                 {fieldErrors.name && (
@@ -323,14 +318,14 @@ function EditAlbum() {
                                     type="file"
                                     name="song"
                                     id="song"
-                                    className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                                    className="block w-full text-sm border rounded-lg cursor-pointer focus:outline-none bg-gray-700 border-gray-600 placeholder-gray-400"
                                     accept=".mp3"
                                     required
                                 />
                             </div>
                             <button
                                 type="submit"
-                                className="w-full mb-auto text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                                className="w-full text-white focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center bg-primary-600 hover:bg-primary-700 focus:ring-primary-800"
                             >
                                 {requestLoading ? <LoadingDots /> : "Add Song"}
                             </button>

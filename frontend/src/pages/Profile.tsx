@@ -36,7 +36,6 @@ export default function Profile() {
     function previewFile(e: any) {
         var file = e.target.files[0];
         var reader = new FileReader();
-        console.log(e.target.files[0]);
         reader.onloadend = function () {
             setAvatarSrc(reader.result);
         };
@@ -52,9 +51,7 @@ export default function Profile() {
             if (res.status === 200) {
                 setUser(res.data.data);
             }
-        } catch (error: any) {
-            console.log(error);
-        }
+        } catch (error: any) {}
         setLoading(false);
     };
     useEffect(() => {
@@ -106,7 +103,6 @@ export default function Profile() {
                     });
                     setFieldErrors({ ...newState });
                 }
-                // console.log(res);
             });
 
         setRequestLoading(false);
@@ -203,7 +199,7 @@ export default function Profile() {
                             </div>
                             <button
                                 type="submit"
-                                className="w-full mb-auto text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                                className="w-full mb-auto focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center bg-primary-600 hover:bg-primary-700 focus:ring-primary-800"
                             >
                                 {requestLoading ? (
                                     <LoadingDots />

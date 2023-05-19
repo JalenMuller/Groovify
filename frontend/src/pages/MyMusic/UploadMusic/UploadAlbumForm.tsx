@@ -75,7 +75,6 @@ function UploadAlbumForm() {
             })
             .catch((err) => {
                 const errors = getFieldErrors(err.response.data.errors);
-                console.log(errors);
                 if (errors.length === 0)
                     // No errors returned? Send basic error message.
                     statusContext.updateStatus(
@@ -89,10 +88,8 @@ function UploadAlbumForm() {
                         newState[error.field as keyof FormFields] =
                             error.errorMessage;
                     });
-                    console.log(errors);
                     setFieldErrors({ ...newState });
                 }
-                // console.log(res);
             });
 
         setRequestLoading(false);
@@ -209,7 +206,7 @@ function UploadAlbumForm() {
                         </div>
                         <button
                             type="submit"
-                            className="w-full mb-auto text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                            className="w-full mb-auto focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center bg-primary-600 hover:bg-primary-700 focus:ring-primary-800"
                         >
                             {requestLoading ? <LoadingDots /> : "Create Album"}
                         </button>

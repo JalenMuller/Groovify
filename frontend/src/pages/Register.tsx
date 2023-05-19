@@ -3,6 +3,7 @@ import { Link, Navigate } from "react-router-dom";
 import axios from "../axios";
 import { useAuth } from "../contexts/AuthContext";
 import { getFieldErrors } from "../functions/generalFunctions";
+import LoadingDots from "../components/LoadingDots";
 
 interface FormFields {
     name: null | string;
@@ -13,6 +14,7 @@ interface FormFields {
 export default function Register() {
     const { setUser } = useAuth();
     const [error, setError] = React.useState(null);
+    const [requestLoading, setRequestLoading] = React.useState(false);
     const [fieldErrors, setFieldErrors] = React.useState({
         name: null,
         email: null,
@@ -21,6 +23,7 @@ export default function Register() {
     // register user
     const handleSubmit = async (e: any) => {
         e.preventDefault();
+        setRequestLoading(true);
         const { name, email, password, cpassword } = e.target.elements;
         const body = {
             name: name.value,
@@ -28,7 +31,6 @@ export default function Register() {
             password: password.value,
             password_confirmation: cpassword.value,
         };
-        console.log(body);
         try {
             const resp = await axios.post("/register", body);
             if (resp.status === 200) {
@@ -43,18 +45,18 @@ export default function Register() {
                 let errors = getFieldErrors(error.response.data.errors);
                 errors.forEach((err: any) => {
                     newState[err.field as keyof FormFields] = err.errorMessage;
-                    console.log(newState[err.field as keyof FormFields]);
                 });
                 setFieldErrors({ ...newState });
             }
         }
+        setRequestLoading(false);
     };
 
     return (
-        <section className="bg-gray-50 dark:bg-gray-900">
+        <section className="bg-gray-900">
             <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto h-screen lg:py-0">
                 <div className="w-full max-h-full rounded-lg max-w-lg p-4 shadow border bg-gray-800 border-gray-700">
-                    <h1 className="text-2xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white mb-4">
+                    <h1 className="text-2xl font-bold leading-tight tracking-tight md:text-2xl text-white mb-4">
                         Sign Up
                     </h1>
                     <form
@@ -66,7 +68,7 @@ export default function Register() {
                         <div>
                             <label
                                 htmlFor="name"
-                                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                                className="block mb-2 text-sm font-medium text-white"
                             >
                                 Full Name
                             </label>
@@ -74,8 +76,8 @@ export default function Register() {
                                 type="text"
                                 name="name"
                                 id="name"
-                                className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                placeholder="Jhone Doe"
+                                className="border sm:text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
+                                placeholder="Enter your full name"
                                 // required
                             />
                             {fieldErrors.name && (
@@ -95,8 +97,8 @@ export default function Register() {
                                 type="email"
                                 name="email"
                                 id="email"
-                                className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                placeholder="name@company.com"
+                                className="border sm:text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
+                                placeholder="Enter your email"
                                 // required
                             />
                             {fieldErrors.email && (
@@ -108,7 +110,7 @@ export default function Register() {
                         <div>
                             <label
                                 htmlFor="password"
-                                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                                className="block mb-2 text-sm font-medium text-white"
                             >
                                 Password
                             </label>
@@ -116,8 +118,8 @@ export default function Register() {
                                 type="password"
                                 name="password"
                                 id="password"
-                                placeholder="••••••••"
-                                className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                placeholder="Create a password"
+                                className="border sm:text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
                                 // required
                             />
                             {fieldErrors.password && (
@@ -129,7 +131,7 @@ export default function Register() {
                         <div>
                             <label
                                 htmlFor="cpassword"
-                                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                                className="block mb-2 text-sm font-medium text-white"
                             >
                                 Confirm password
                             </label>
@@ -137,23 +139,23 @@ export default function Register() {
                                 type="password"
                                 name="cpassword"
                                 id="cpassword"
-                                placeholder="••••••••"
-                                className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                placeholder=""
+                                className="border sm:text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
                                 // required
                             />
                         </div>
 
                         <button
                             type="submit"
-                            className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 !mt-4"
+                            className="w-full text-white !mt-3 mb-auto focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center bg-primary-600 hover:bg-primary-700 focus:ring-primary-800"
                         >
-                            Create an account
+                            {requestLoading ? <LoadingDots /> : "Register"}
                         </button>
-                        <p className="text-sm font-light text-gray-500 dark:text-gray-400">
+                        <p className="text-sm font-light text-gray-400">
                             Already have an account?{" "}
                             <Link
                                 to="/"
-                                className="font-medium text-primary-600 hover:underline dark:text-primary-500"
+                                className="font-medium hover:underline text-primary-500"
                             >
                                 Login here
                             </Link>

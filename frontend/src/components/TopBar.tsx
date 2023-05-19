@@ -97,16 +97,16 @@ function TopBar(props: { user: any; logout: Function }) {
             </button>
             <div
                 id="dropdown"
-                className="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-md w-44 dark:bg-gray-700 border border-zinc-500"
+                className="z-10 hidden divide-y divide-gray-100 rounded-lg shadow-md w-44 bg-gray-700 border border-zinc-500"
             >
                 <ul
-                    className="py-2 text-sm text-gray-700 dark:text-gray-200"
+                    className="py-2 text-sm text-gray-200"
                     aria-labelledby="dropdownDefaultButton"
                 >
                     <li onClick={clearCurrentSong}>
                         <Link
                             to="dashboard/profile"
-                            className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                            className="block px-4 py-2 hover:bg-gray-600 hover:text-white"
                         >
                             Profile
                         </Link>
@@ -114,7 +114,7 @@ function TopBar(props: { user: any; logout: Function }) {
                     <li onClick={clearCurrentSong}>
                         <Link
                             to="dashboard/mymusic/upload-music"
-                            className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                            className="block px-4 py-2 hover:bg-gray-600 hover:text-white"
                         >
                             My Music
                         </Link>
@@ -122,7 +122,7 @@ function TopBar(props: { user: any; logout: Function }) {
                     <li>
                         <a
                             onClick={() => props.logout()}
-                            className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer"
+                            className="block px-4 py-2 hover:bg-gray-600 hover:text-white cursor-pointer"
                         >
                             Sign out
                         </a>

@@ -23,13 +23,10 @@ function NewPlaylistModal(props: {
         try {
             const res = await axios.post("/playlist/create", body);
             if (res.status === 200) {
-                console.log(res.data.playlist.id);
                 handleClose();
                 navigate(`/playlist/${res.data?.playlist.id}`);
             }
-        } catch (error: any) {
-            console.log(error);
-        }
+        } catch (error: any) {}
         setLoading(false);
     };
     const handleClose = () => {
@@ -67,7 +64,7 @@ function NewPlaylistModal(props: {
 
                     <button
                         type="submit"
-                        className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                        className="w-full text-white focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center bg-primary-600 hover:bg-primary-700 focus:ring-primary-800"
                     >
                         {loading ? <LoadingDots /> : "Create Playlist"}
                     </button>
