@@ -16,7 +16,6 @@ function GenrePicker() {
                 setGenres(res.data);
             }
         } catch (error: any) {
-            console.log(error);
         }
     };
     useEffect(() => {

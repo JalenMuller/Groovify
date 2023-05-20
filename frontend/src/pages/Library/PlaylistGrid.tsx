@@ -20,12 +20,9 @@ function PlaylistGrid() {
         try {
             const res = await axios.get("/playlist/my-playlists");
             if (res.status === 200) {
-                console.log(res);
                 setPlaylists(res.data);
-                console.log(playlists);
             }
         } catch (error: any) {
-            console.log(error);
         }
         setLoading(false);
     };

@@ -15,6 +15,7 @@ import {
 } from "@heroicons/react/24/solid";
 import { SkipEndFill, SkipStartFill } from "../../assets/Icons";
 import { secondsToMinutes } from "../../functions/generalFunctions";
+import { constants } from "../../data/constants";
 function MusicPlayer() {
     const context: any = useContext(MusicPlayerContext);
     const [playing, setPlaying] = useState(false);
@@ -137,15 +138,12 @@ function MusicPlayer() {
                 <>
                     <audio
                         ref={audioRef}
-                        src={`http://localhost:8000/storage/songs/${context.song.song_path}`}
+                        src={`${constants.baseURL}/storage/songs/${context.song.song_path}`}
                     />
                     <div className="w-full px-5 h-20 md:h-16 flex justify-between items-center md:h-20 bg-black border-t border-gray-700">
                         <div className="w-2/3 md:w-1/3 flex">
                             <img
-                                src={
-                                    "http://localhost:8000/storage/images/covers/" +
-                                    context.song.cover_path
-                                }
+                                src={`${constants.baseURL}/storage/images/covers/${context.song.cover_path}`}
                                 className="w-10 h-10 mr-3"
                             />
                             <div className="flex flex-col">

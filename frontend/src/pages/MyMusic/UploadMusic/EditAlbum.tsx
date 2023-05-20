@@ -18,6 +18,7 @@ import { useAuth } from "../../../contexts/AuthContext";
 import axios from "../../../axios";
 import LoadingSpinner from "../../../components/LoadingSpinner";
 import { StatusMessageContext } from "../../../contexts/StatusMessageContext";
+import { constants } from "../../../data/constants";
 
 interface FormFields {
     name: null | string;
@@ -180,10 +181,7 @@ function EditAlbum() {
                         <div className="flex flex-row justify-between md:items-center">
                             <div className="flex">
                                 <img
-                                    src={
-                                        "http://localhost:8000/storage/images/covers/" +
-                                        album.cover
-                                    }
+                                    src={`${constants.baseURL}/storage/images/covers/${album.cover}`}
                                     className="h-16 w-16 rounded-sm"
                                 />
                                 <div className="flex flex-col ml-3">
@@ -223,10 +221,7 @@ function EditAlbum() {
                                                 #{song.album_order}
                                             </span>
                                             <img
-                                                src={
-                                                    "http://localhost:8000/storage/images/covers/" +
-                                                    album.cover
-                                                }
+                                                src={`${constants.baseURL}/storage/images/covers/${album.cover}`}
                                                 className="h-10 w-10 rounded-sm"
                                             />
                                             <div className="flex w-full flex-col ml-3">

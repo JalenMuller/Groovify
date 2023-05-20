@@ -11,13 +11,13 @@ import { timeToPrettyDate } from "../../../functions/generalFunctions";
 import LoadingSpinner from "../../../components/LoadingSpinner";
 import { Album } from "../../../interfaces/AlbumInterface";
 import { Link } from "react-router-dom";
+import { constants } from "../../../data/constants";
 
 function MyAlbums() {
     const [loading, setLoading] = useState(false);
     const [albums, setAlbums] = useState<Album[]>([]);
 
     const deleteAlbum = async (id: number) => {
-        // return console.log(id);
         setLoading(true);
         try {
             const res = await axios.delete(`/delete-album/${id}`);
@@ -37,10 +37,8 @@ function MyAlbums() {
             const res = await axios.get("/my-albums");
             if (res.status === 200) {
                 setAlbums(res.data);
-                console.log(res.data);
             }
         } catch (error: any) {
-            console.log(error);
         }
         setLoading(false);
     };
@@ -63,9 +61,7 @@ function MyAlbums() {
                     <div className="flex w-full overflow-x-hidden items-center">
                         <img
                             src={
-                                "http://localhost:8000/storage/images/covers/" +
-                                album.cover
-                            }
+                                `${constants.baseURL}/storage/images/covers/${album.cover}`}
                             className="h-10 w-10 rounded-sm hidden md:block"
                         />
                         <div className="flex flex-col md:ml-3 truncate">

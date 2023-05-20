@@ -7,6 +7,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { createPortal } from "react-dom";
 import { useContext, useEffect, useState } from "react";
 import { MusicPlayerContext } from "../contexts/MusicPlayerContext";
+import { constants } from "../data/constants";
 
 function TopBar(props: { user: any; logout: Function }) {
     const [background, setBackground] = useState(false);
@@ -75,7 +76,7 @@ function TopBar(props: { user: any; logout: Function }) {
                         {props.user.avatar ? (
                             <img
                                 className="w-full h-full rounded-full"
-                                src={`http://localhost:8000/storage/images/avatars/${props.user.avatar}`}
+                                src={`${constants.baseURL}/storage/images/avatars/${props.user.avatar}`}
                             />
                         ) : (
                             <UserIcon className="p-2" />
@@ -86,7 +87,7 @@ function TopBar(props: { user: any; logout: Function }) {
                     {props.user.avatar ? (
                         <img
                             className="w-full h-full rounded-full"
-                            src={`http://localhost:8000/storage/images/avatars/${props.user.avatar}`}
+                            src={`${constants.baseURL}/storage/images/avatars/${props.user.avatar}`}
                         />
                     ) : (
                         <span className="font-bold">

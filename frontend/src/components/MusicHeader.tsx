@@ -5,6 +5,7 @@ import {
 } from "@heroicons/react/24/solid";
 import { Album } from "../interfaces/AlbumInterface";
 import { timeToPrettyDate } from "../functions/generalFunctions";
+import { constants } from "../data/constants";
 
 function MusicHeader(props: {
     type: "album" | "playlist";
@@ -19,10 +20,7 @@ function MusicHeader(props: {
             <div className="flex ml-2 md:ml-7">
                 {props.cover ? (
                     <img
-                        src={
-                            "http://localhost:8000/storage/images/covers/" +
-                            props.cover
-                        }
+                        src={`${constants.baseURL}/storage/images/covers/${props.cover}`}
                         className="w-20 h-20 md:w-40 md:h-40 aspect-square rounded-lg bg-zinc-700"
                     />
                 ) : (

@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 import { Album } from "../../interfaces/AlbumInterface";
+import { constants } from "../../data/constants";
 
 function AlbumGrid(props: { albums: Album[] }) {
-    console.log(props.albums);
     return (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 px-2">
             {props.albums.map((album) => (
@@ -13,9 +13,7 @@ function AlbumGrid(props: { albums: Album[] }) {
                 >
                     <img
                         src={
-                            "http://localhost:8000/storage/images/covers/" +
-                            album.cover
-                        }
+                            `${constants.baseURL}/storage/images/covers/${album.cover}`}
                         className="mr-3 rounded-lg"
                     />
                     <div className="px-1 my-2">

@@ -6,13 +6,13 @@ import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import { timeToPrettyDate } from "../../../functions/generalFunctions";
 import LoadingSpinner from "../../../components/LoadingSpinner";
 import { Link } from "react-router-dom";
+import { constants } from "../../../data/constants";
 
 function MySingles() {
     const [loading, setLoading] = useState(false);
     const [songs, setSongs] = useState<Song[]>([]);
 
     const deleteSong = async (id: number) => {
-        // return console.log(id);
         setLoading(true);
         try {
             const res = await axios.delete(`/delete-song/${id}`);
@@ -32,11 +32,8 @@ function MySingles() {
             const res = await axios.get("/my-singles");
             if (res.status === 200) {
                 setSongs(res.data);
-                console.log(res.data);
             }
-        } catch (error: any) {
-            console.log(error);
-        }
+        } catch (error: any) {}
         setLoading(false);
     };
     useEffect(() => {
@@ -57,10 +54,7 @@ function MySingles() {
                 >
                     <div className="flex w-3/5 items-center">
                         <img
-                            src={
-                                "http://localhost:8000/storage/images/covers/" +
-                                song.cover_path
-                            }
+                            src={`${constants.baseURL}/storage/images/covers/${song.cover_path}`}
                             className="h-10 w-10 rounded-sm"
                         />
                         <div className="flex w-full flex-col ml-3">

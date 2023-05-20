@@ -7,6 +7,7 @@ import {
 import { ChartBarIcon, EllipsisVerticalIcon } from "@heroicons/react/24/solid";
 import { MusicPlayerContext } from "../../contexts/MusicPlayerContext";
 import SongActionMenu from "./SongActionMenu";
+import { constants } from "../../data/constants";
 
 function SongRow(props: {
     playSong: (song: Song) => void;
@@ -36,7 +37,6 @@ function SongRow(props: {
             <tr
                 className={`text-gray-400 rounded-lg hover:bg-gray-800/50 cursor-pointer ${props.rowStyle}`}
                 onClick={(e) => {
-                    console.log(e.target as HTMLElement);
                     props.playSong(song);
                 }}
                 key={song.id}
@@ -58,10 +58,7 @@ function SongRow(props: {
                     className="flex px-6 py-2 font-normal whitespace-nowrap text-white"
                 >
                     <img
-                        src={
-                            "http://localhost:8000/storage/images/covers/" +
-                            song.cover_path
-                        }
+                        src={`${constants.baseURL}/storage/images/covers/${song.cover_path}`}
                         className="h-12 w-12 md:h-10 md:w-10 mr-3 rounded-sm"
                     />
                     <div className="flex flex-col">

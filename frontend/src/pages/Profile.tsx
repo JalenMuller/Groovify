@@ -8,6 +8,7 @@ import LoadingDots from "../components/LoadingDots";
 import StatusMessage from "../components/StatusMessage";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { StatusMessageContext } from "../contexts/StatusMessageContext";
+import { constants } from "../data/constants";
 
 interface FormFields {
     name: null | string;
@@ -146,7 +147,7 @@ export default function Profile() {
                                     {user?.avatar && !avatarSrc ? (
                                         <img
                                             className="h-full w-full rounded-full"
-                                            src={`http://localhost:8000/storage/images/avatars/${user.avatar}`}
+                                            src={`${constants.baseURL}/storage/images/avatars/${user.avatar}`}
                                         />
                                     ) : (
                                         !avatarSrc && (
