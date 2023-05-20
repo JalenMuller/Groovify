@@ -147,7 +147,7 @@ export default function Profile() {
                                     {user?.avatar && !avatarSrc ? (
                                         <img
                                             className="h-full w-full rounded-full"
-                                            src={`${constants.baseURL}/storage/images/avatars/${user.avatar}`}
+                                            src={`${constants.baseURL}/uploads/images/avatars/${user.avatar}`}
                                         />
                                     ) : (
                                         !avatarSrc && (

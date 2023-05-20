@@ -76,7 +76,7 @@ function TopBar(props: { user: any; logout: Function }) {
                         {props.user.avatar ? (
                             <img
                                 className="w-full h-full rounded-full"
-                                src={`${constants.baseURL}/storage/images/avatars/${props.user.avatar}`}
+                                src={`${constants.baseURL}/uploads/images/avatars/${props.user.avatar}`}
                             />
                         ) : (
                             <UserIcon className="p-2" />
@@ -87,7 +87,7 @@ function TopBar(props: { user: any; logout: Function }) {
                     {props.user.avatar ? (
                         <img
                             className="w-full h-full rounded-full"
-                            src={`${constants.baseURL}/storage/images/avatars/${props.user.avatar}`}
+                            src={`${constants.baseURL}/uploads/images/avatars/${props.user.avatar}`}
                         />
                     ) : (
                         <span className="font-bold">

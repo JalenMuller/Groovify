@@ -13,7 +13,7 @@ function AlbumGrid(props: { albums: Album[] }) {
                 >
                     <img
                         src={
-                            `${constants.baseURL}/storage/images/covers/${album.cover}`}
+                            `${constants.baseURL}/uploads/images/covers/${album.cover}`}
                         className="mr-3 rounded-lg"
                     />
                     <div className="px-1 my-2">

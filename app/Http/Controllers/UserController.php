@@ -12,8 +12,8 @@ class UserController extends Controller
     {
         $data = $request->validated();
         if ($request->hasFile('avatar')) {
-            $request->file('avatar')->storePublicly('public/images/avatars');
             $avatar_file_name = $request->file('avatar')->hashName();
+            $request->file('avatar')->storeAs('uploads/images/avatars', $avatar_file_name, 'public_html');
         } else {
             $avatar_file_name = null;
 

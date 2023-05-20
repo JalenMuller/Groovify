@@ -143,7 +143,7 @@ function UploadSingleForm() {
                         type="text"
                         name="name"
                         id="name"
-                        className="block w-full text-sm border rounded-lg cursor-pointer focus:outline-none bg-gray-700 border-gray-600 placeholder-gray-400"
+                        className="block w-full text-sm border rounded-lg focus:outline-none bg-gray-700 border-gray-600 placeholder-gray-400"
                         required
                     />
                     {fieldErrors.name && (

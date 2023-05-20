@@ -20,7 +20,7 @@ function MusicHeader(props: {
             <div className="flex ml-2 md:ml-7">
                 {props.cover ? (
                     <img
-                        src={`${constants.baseURL}/storage/images/covers/${props.cover}`}
+                        src={`${constants.baseURL}/uploads/images/covers/${props.cover}`}
                         className="w-20 h-20 md:w-40 md:h-40 aspect-square rounded-lg bg-zinc-700"
                     />
                 ) : (

@@ -61,7 +61,7 @@ function MyAlbums() {
                     <div className="flex w-full overflow-x-hidden items-center">
                         <img
                             src={
-                                `${constants.baseURL}/storage/images/covers/${album.cover}`}
+                                `${constants.baseURL}/uploads/images/covers/${album.cover}`}
                             className="h-10 w-10 rounded-sm hidden md:block"
                         />
                         <div className="flex flex-col md:ml-3 truncate">

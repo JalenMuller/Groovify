@@ -16,14 +16,14 @@ class UploadController extends Controller
         // return response()->json($request->user()['id']);
         $data = $request->validated();
         if ($request->hasFile('cover')) {
-            $request->file('cover')->storePublicly('public/images/covers');
             $cover_file_name = $request->file('cover')->hashName();
+            $request->file('cover')->storeAs('uploads/images/covers', $cover_file_name, 'public_html');
         } else {
             return response()->json(['message' => 'Something went wrong with your image upload.']);
         }
         if ($request->hasFile('song')) {
-            $request->file('song')->storePublicly('public/songs');
             $song_file_name = $request->file('song')->hashName();
+            $request->file('song')->storeAs('uploads/songs', $song_file_name, 'public_html');
         } else {
             return response()->json(['message' => 'Something went wrong with your song upload.']);
         }
@@ -56,8 +56,8 @@ class UploadController extends Controller
         $album = Album::where('id', $album_id)->first();
 
         if ($request->hasFile('song')) {
-            $request->file('song')->storePublicly('public/songs');
             $song_file_name = $request->file('song')->hashName();
+            $request->file('song')->storeAs('uploads/songs', $song_file_name, 'public_html');
         } else {
             return response()->json(['message' => 'Something went wrong with your song upload.']);
         }
@@ -92,8 +92,8 @@ class UploadController extends Controller
         $data = $request->validated();
 
         if ($request->hasFile('cover')) {
-            $request->file('cover')->storePublicly('public/images/covers');
             $cover_file_name = $request->file('cover')->hashName();
+            $request->file('cover')->storeAs('uploads/images/covers', $cover_file_name, 'public_html');
         } else {
             return response()->json(['message' => 'Something went wrong with your image upload.']);
         }

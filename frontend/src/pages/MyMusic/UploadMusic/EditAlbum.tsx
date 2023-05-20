@@ -181,7 +181,7 @@ function EditAlbum() {
                         <div className="flex flex-row justify-between md:items-center">
                             <div className="flex">
                                 <img
-                                    src={`${constants.baseURL}/storage/images/covers/${album.cover}`}
+                                    src={`${constants.baseURL}/uploads/images/covers/${album.cover}`}
                                     className="h-16 w-16 rounded-sm"
                                 />
                                 <div className="flex flex-col ml-3">
@@ -221,7 +221,7 @@ function EditAlbum() {
                                                 #{song.album_order}
                                             </span>
                                             <img
-                                                src={`${constants.baseURL}/storage/images/covers/${album.cover}`}
+                                                src={`${constants.baseURL}/uploads/images/covers/${album.cover}`}
                                                 className="h-10 w-10 rounded-sm"
                                             />
                                             <div className="flex w-full flex-col ml-3">

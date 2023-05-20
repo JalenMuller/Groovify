@@ -58,7 +58,7 @@ function SongRow(props: {
                     className="flex px-6 py-2 font-normal whitespace-nowrap text-white"
                 >
                     <img
-                        src={`${constants.baseURL}/storage/images/covers/${song.cover_path}`}
+                        src={`${constants.baseURL}/uploads/images/covers/${song.cover_path}`}
                         className="h-12 w-12 md:h-10 md:w-10 mr-3 rounded-sm"
                     />
                     <div className="flex flex-col">

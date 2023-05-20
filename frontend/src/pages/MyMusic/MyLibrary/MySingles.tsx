@@ -54,7 +54,7 @@ function MySingles() {
                 >
                     <div className="flex w-3/5 items-center">
                         <img
-                            src={`${constants.baseURL}/storage/images/covers/${song.cover_path}`}
+                            src={`${constants.baseURL}/uploads/images/covers/${song.cover_path}`}
                             className="h-10 w-10 rounded-sm"
                         />
                         <div className="flex w-full flex-col ml-3">
