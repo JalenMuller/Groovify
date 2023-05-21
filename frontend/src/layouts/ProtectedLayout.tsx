@@ -11,10 +11,12 @@ import { Song } from "../interfaces/SongInterface";
 import { StatusMessageInterface } from "../interfaces/StatusMessageInterface";
 import { StatusMessageContext } from "../contexts/StatusMessageContext";
 import StatusMessage from "../components/StatusMessage";
+import MobileNav from "../components/MobileNav";
 
 export default function DefaultLayout() {
     const { user, setUser }: any = useAuth();
     const [song, setSong] = useState<{} | Song>({});
+    const [screenWidth, setScreenWidth] = useState(0);
     const [statusMessage, setStatusMessage] = useState<any>({
         type: null,
         message: null,
@@ -45,6 +47,8 @@ export default function DefaultLayout() {
     };
     useEffect(() => {
         initFlowbite();
+        setScreenWidth(window.innerWidth);
+
         // check if user is logged in or not from server
         (async () => {
             try {
@@ -76,6 +80,12 @@ export default function DefaultLayout() {
             }
         } catch (error) {}
     };
+    let spacing = "";
+    if (Object.keys(song).length > 0) {
+        spacing = "pb-32 md:pb-16";
+    } else {
+        spacing = "pb-16 md:pb-0";
+    }
     return (
         <>
             <StatusMessageContext.Provider
@@ -95,11 +105,24 @@ export default function DefaultLayout() {
                 >
                     <StatusMessage />
                     <div className="absolute flex h-screen w-screen bg-zinc-900 overflow-hidden">
-                        <Navigation />
-                        <main className="relative flex flex-col h-full w-full pb-16 md:pb-0 flex-col text-white">
+                        {screenWidth > 768 && <Navigation />}
+                        <main
+                            className={`relative flex flex-col h-full w-full flex-col text-white ${spacing}`}
+                        >
                             <TopBar user={user} logout={handleLogout} />
                             <Outlet />
-                            {Object.keys(song).length > 0 && <MusicPlayer />}
+                            <div
+                                className={
+                                    screenWidth < 768
+                                        ? "fixed w-full bottom-0"
+                                        : "absolute w-full bottom-0"
+                                }
+                            >
+                                {Object.keys(song).length > 0 && (
+                                    <MusicPlayer />
+                                )}
+                                {screenWidth < 768 && <MobileNav />}
+                            </div>
                         </main>
                     </div>
                 </MusicPlayerContext.Provider>
