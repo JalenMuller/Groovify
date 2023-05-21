@@ -67,7 +67,7 @@ img[src=""] {
     display: none;
 }
 #home{
-    background-image: url("images/marcela-laskoski-YrtFlrLo2DQ-unsplash.jpg");
+    background-image: url("/images/marcela-laskoski-YrtFlrLo2DQ-unsplash.jpg");
     background-size: 100% 100%;
     position: relative;
     /* filter: grayscale(100%); */
