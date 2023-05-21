@@ -140,7 +140,7 @@ function MusicPlayer() {
                         ref={audioRef}
                         src={`${constants.baseURL}/storage/songs/${context.song.song_path}`}
                     />
-                    <div className="w-full px-5 h-20 md:h-16 flex justify-between items-center md:h-20 bg-black border-t border-gray-700">
+                    <div className="px-5 h-16 flex justify-between items-center bg-black border-t border-gray-700">
                         <div className="w-2/3 md:w-1/3 flex">
                             <img
                                 src={`${constants.baseURL}/storage/images/covers/${context.song.cover_path}`}
