@@ -31,7 +31,7 @@ class SongUploadRequest extends FormRequest
             'features' => 'nullable|json|max:255',
             'cover' => [
                 'required',
-                File::types(['png', 'jpeg'])
+                File::types(['png', 'jpeg', 'jpg'])
                     ->max(1024 * 1000 * 2),
             ],
             'song' => [

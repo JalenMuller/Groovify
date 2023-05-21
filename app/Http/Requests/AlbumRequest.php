@@ -29,7 +29,7 @@ class AlbumRequest extends FormRequest
             'genre' => 'required|integer|between:1,10',
             'cover' => [
                 'required',
-                File::types(['png', 'jpeg'])
+                File::types(['png', 'jpeg', 'jpg'])
                     ->max(1024 * 1000 * 2),
                 //2MB?
             ],
