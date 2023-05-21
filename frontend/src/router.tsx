@@ -11,6 +11,7 @@ import ViewAlbum from "./components/Music/ViewAlbum";
 import Search from "./pages/Search";
 import Library from "./pages/Library/Library";
 import ViewPlaylist from "./pages/Library/ViewPlaylist";
+import Home from "./pages/Home";
 
 const router = createBrowserRouter([
     {
@@ -19,6 +20,10 @@ const router = createBrowserRouter([
         children: [
             {
                 path: "/",
+                element: <Home />,
+            },
+            {
+                path: "/login",
                 element: <Login />,
             },
             {
