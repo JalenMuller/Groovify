@@ -27,7 +27,7 @@ class UpdateProfileRequest extends FormRequest
             'email' => 'required|email|unique:users,email,' . $this->user()->id,
             'name' => 'required|string|max:255',
             'avatar' => [
-                File::types(['png', 'jpeg'])
+                File::types(['png', 'jpeg', 'jpg'])
                     ->max(1024 * 1000 * 4),
             ],
         ];
